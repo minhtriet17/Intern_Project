@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\Validator;
 class LectureController extends Controller
 {
     public function index(){
-        $lectures = Lecture::get();
+        $lecture = Lecture::get();
 
-        if($lectures){
-            return LectureResource::collection($lectures);
+        if($lecture){
+            return LectureResource::collection($lecture);
         } else {
             return response()->json(['message' => ' No record Available'], 200);
         }
@@ -33,19 +33,28 @@ class LectureController extends Controller
         }
 
 
-        $lectures = Lecture::create([
+        $lecture = Lecture::create([
             'title' => $request->title,
             'description' => $request->description,
             'video_url' => $request->video_url,
             'category' => $request->category,
         ]);
 
-        return response()->json(['message' => 'Lecture Created Successfully', 'data' => new LectureResource($lectures) ],200);
+        return response()->json(['message' => 'Lecture Created Successfully', 'data' => new LectureResource($lecture) ],200);
     }
     public function show(Lecture $lecture){
         return new LectureResource($lecture);
     }
-    public function update(Lecture $lecture, Request $request){
+    public function edit($id){
+        $lecture = Lecture::find($id);
+        if($lecture){
+            return new LectureResource($lecture);
+        } else {
+            return response()->json(['message' => ' No record Available'], 404);
+        }
+    }
+
+    public function update(Request $request, int $id){
         $validator = Validator::make($request->all(), [
             'title' => 'required | string | max:255',
             'description' => 'required',
@@ -58,19 +67,33 @@ class LectureController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
+        else {
+            $lecture = Lecture::find($id);
+            
+            if($lecture){
+                $lecture -> update([
+                    'title'=> $request->title,
+                    'description'=> $request->description,
+                    'video_url'=> $request->video_url,
+                    'category'=> $request->category
+                ]);
+                return response()->json(['message' => 'Lecture Updated Successfully', 'data' => new LectureResource($lecture) ],200);
+            }
+            else {
+                return response()->json(['message' => ' No record Available'], 404);
+            }
+        }
 
-
-        $lecture->update([
-            'title' => $request->title,
-            'description' => $request->description,
-            'video_url' => $request->video_url,
-            'category' => $request->category,
-        ]);
-
-        return response()->json(['message' => 'Lecture Updated Successfully', 'data' => new LectureResource($lecture) ],200);
+        
     }
-    public function destroy(Lecture $lecture){
-        $lecture->delete();
-        return response()->json(['message' => 'Lecture Deleted Successfully'],200);
+    public function destroy($id){
+        $lecture = Lecture::find($id);
+        if($lecture) {
+            $lecture->delete();
+            return response()->json(['message'=> 'Delete Lecture Successfully'],200);
+        }
+        else {
+            return response()->json(['message'=> 'Not record Available'],404);
+        }
     }
 }

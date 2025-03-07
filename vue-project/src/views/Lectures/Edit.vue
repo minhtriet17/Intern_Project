@@ -29,7 +29,7 @@
                     <input type="text" v-model="model.category" class="form-control" />
                 </div>
                 <div class="mb-3">
-                    <button type="button" @click="saveLecture" class="btn btn-primary">Save</button>
+                    <button type="button" @click="updateLecture" class="btn btn-primary">Update</button>
                 </div>
             </div>
         </div>
@@ -41,9 +41,10 @@
 import axios from 'axios';
 
 export default {
-    name: "lectureCreate",
+    name: "lectureEdit",
     data() {
         return {
+            lectureId: '',
             errorList: '',
             model:{
                 title: '',
@@ -53,22 +54,34 @@ export default {
             }
         }
     },
+    mounted(){
+        //console.log(this.$route.params.id);
+        this.lectureId = this.$route.params.id;
+        this.getLectureData(this.$route.params.id);
+    },
     methods: {
-        saveLecture(){
+        
+        getLectureData(lectureId){
+            axios.get(`http://localhost:8000/api/lectures/${lectureId}/edit`).then(res => {
+                console.log(res.data.data);
+
+                this.model = res.data.data;
+            }).catch(function (error){
+                if (error.response) {
+
+                    if(error.response.status == 404){ 
+                        alert(error.response.data.message);
+                    }
+                }
+            });
+        },
+        updateLecture(){
 
             var mythis = this;
 
-            axios.post('http://localhost:8000/api/lectures', this.model).then(res => {
+            axios.put(`http://localhost:8000/api/lectures/${this.lectureId}/edit`, this.model).then(res => {
                 console.log(res);
                 alert(res.data.message);
-
-                this.model = {
-                    title: '',
-                    description: '',
-                    video_url: '',
-                    category: ''
-                }
-
                 this.errorList = '';
                 
             }).catch(function (error){
@@ -77,7 +90,9 @@ export default {
                     if(error.response.status == 422){
                         mythis.errorList = error.response.data.errors;
                     }
-
+                    if(error.response.status == 404){ 
+                        alert(error.response.data.message);
+                    }
                     //console.log(error.response.data);
                     //console.log(error.response.status);
                     //console.log(error.response.headers);

@@ -14,6 +14,7 @@ Route::get('/user', function (Request $request) {
 
 Route::get('lectures', [LectureController::class, 'index']);
 Route::post('lectures', [LectureController::class, 'store']);
-Route::get('lecture/{id}', [LectureController::class, 'show']);
-Route::put('lecture/{id}/edit', [LectureController::class, 'update']);
-Route::delete('lecture/{id}/delete', [LectureController::class,'delete']);
+Route::get('lectures/{id}', [LectureController::class, 'show']);
+Route::get('lectures/{id}/edit', [LectureController::class, 'edit']);
+Route::put('lectures/{id}/edit', [LectureController::class, 'update']);
+Route::delete('lectures/{id}/delete', [LectureController::class,'destroy']);
