@@ -1,9 +1,11 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
+
 </script>
 
 <template>
-  <header>
+  
+  <!-- <header>
     <div class="wrapper">
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
@@ -28,14 +30,24 @@ import { RouterLink, RouterView } from 'vue-router'
                   <span :class="{ active: isActive }">Lecture Management</span>
                 </RouterLink>
               </li>
+              <li class="nav-item">
+                <RouterLink class="nav-link" to="/login" v-slot="{ isActive }">
+                  <span :class="{ active: isActive }">Login</span>
+                </RouterLink>
+              </li>
+              <li class="nav-item">
+                <RouterLink class="nav-link" to="/register" v-slot="{ isActive }">
+                  <span :class="{ active: isActive }">Register</span>
+                </RouterLink>
+              </li>
             </ul>
           </div>
         </div>
       </nav>
     </div>
-  </header>
+  </header> -->
 
-  <RouterView />
+ <router-view></router-view>
 </template>
 
 <style scoped>

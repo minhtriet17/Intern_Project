@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'api' => [
+            'driver' => 'jwt', // Hoặc 'token' nếu không dùng JWT
+            'provider' => 'users',
+        ],
     ],
 
     /*
