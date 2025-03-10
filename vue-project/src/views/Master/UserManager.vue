@@ -74,11 +74,9 @@
                         <td>{{ user.name }}</td>
                         <td>{{ user.email }}</td>
                         <td>
-                            <select v-model="user.role" @change="updateUserRole(user)">
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
-                            </select>
+                                <span>{{ user.role }}</span>
                         </td>
+                        
                         <td>
                             <button @click="editUser(user)" class="btn btn-warning">Sửa</button>
                             <button @click="deleteUser(user.id)" class="btn btn-danger">Xóa</button>
@@ -443,5 +441,8 @@
   width: 300px;
 }
 
+.modal-content .h2 {
+  font-size: 16px;
+}
   </style>
   

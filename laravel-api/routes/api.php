@@ -8,7 +8,8 @@ use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\UserController;
 
-
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PermissionController;
 
 Route::apiResource('lectures', LectureController::class);
 
@@ -32,10 +33,19 @@ Route::delete('lectures/{id}/delete', [LectureController::class,'destroy']);
 Route::get('/users', [UserController::class, 'getUsers']);
 
 // Thêm người dùng
-Route::post('/users', [UserController::class, 'addUser']);
+Route::post('/users', [UserController::class, 'store']);
 
 // Sửa người dùng
-Route::put('/users/{id}', [UserController::class, 'updateUser']);
+Route::put('/users/{id}', [UserController::class, 'update']);
 
 // Xóa người dùng
-Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
+Route::delete('/users/{id}', [UserController::class, 'destroy']);
+
+Route::middleware('auth')->group(function () {
+    Route::resource('roles', RoleController::class);
+    Route::resource('permissions', PermissionController::class);
+});
+
+Route::middleware('role:admin')->get('/admin', function () {
+    return view('admin.index');
+});

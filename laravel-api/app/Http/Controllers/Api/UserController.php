@@ -10,10 +10,14 @@ use Illuminate\Routing\Controller; // Thêm dòng này
 class UserController extends Controller
 {
     // Lấy danh sách người dùng
-    public function index()
+    public function getUsers()
     {
-        $users = User::getAllUsers();
-        return response()->json($users);
+        try {
+            $users = User::all();
+            return response()->json($users);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch users'], 500);
+        }
     }
 
     // Thêm người dùng mới
@@ -48,10 +52,16 @@ class UserController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        $user = User::updateUser($id, $request->name, $request->email, $request->role);
-        return response()->json($user);
+        try {
+            \Log::info('Updating user', ['id' => $id, 'data' => $request->all()]);
+            $user = User::updateUser($id, $request->name, $request->email, $request->role);
+            \Log::info('User updated successfully', ['user' => $user]);
+            return response()->json($user);
+        } catch (\Exception $e) {
+            \Log::error('Failed to update user', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Failed to update user'], 500);
+        }
     }
-
     // Xóa người dùng
     public function destroy($id)
     {

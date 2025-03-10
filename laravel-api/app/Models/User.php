@@ -5,29 +5,27 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Tymon\JWTAuth\Contracts\JWTSubject; 
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements JWTSubject // Implement JWTSubject
+class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
-    // Định nghĩa các trường có thể được gán (mass assignable)
     protected $fillable = [
         'name',
-        'first_name', // Thêm first_name
-        'last_name',  // Thêm last_name
+        'first_name',
+        'last_name',
         'email',
         'password',
-        'role', // Thêm role để phù hợp với phân quyền
+        'role',
     ];
 
-    // Các trường không nên hiển thị khi chuyển đổi sang dạng JSON
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    // Các kiểu dữ liệu đặc biệt
     protected function casts(): array
     {
         return [
@@ -36,43 +34,48 @@ class User extends Authenticatable implements JWTSubject // Implement JWTSubject
         ];
     }
 
-    // Phương thức để lấy khóa của người dùng (JWT)
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
 
-    // Phương thức để lấy các claims của JWT (nếu cần)
     public function getJWTCustomClaims()
     {
         return [];
     }
 
-    // Các phương thức CRUD sử dụng Eloquent ORM thay cho PDO
-    public static function getAllUsers() {
-        return self::all(); // Lấy tất cả người dùng
+    public static function getAllUsers()
+    {
+        return self::all();
     }
 
-    public static function addUser($name, $email, $role) {
+    public static function addUser($name, $email, $role)
+    {
         return self::create([
             'name' => $name,
             'email' => $email,
             'role' => $role,
-            'password' => bcrypt('defaultpassword') // Có thể thêm mật khẩu mặc định hoặc yêu cầu nhập
+            'password' => bcrypt('defaultpassword')
         ]);
     }
 
-    public static function updateUser($id, $name, $email, $role) {
-        $user = self::findOrFail($id);
-        $user->update([
-            'name' => $name,
-            'email' => $email,
-            'role' => $role,
-        ]);
+    public static function updateUser($id, $name, $email, $role)
+    {
+        $user = self::find($id);
+        if (!$user) {
+            throw new \Exception('User not found');
+        }
+
+        $user->name = $name;
+        $user->email = $email;
+        $user->role = $role;
+        $user->save();
+
         return $user;
     }
 
-    public static function deleteUser($id) {
+    public static function deleteUser($id)
+    {
         $user = self::findOrFail($id);
         return $user->delete();
     }
