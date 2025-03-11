@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -15,11 +16,18 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if ($token = JWTAuth::attempt($credentials)) {
-            return response()->json(['token' => $token]);
+        try {
+            if ($token = JWTAuth::attempt($credentials)) {
+                Log::info('Login successful for email ' . $request->email);
+                return response()->json(['token' => $token]);
+            } else {
+                Log::error('Login failed: Unauthorized for email ' . $request->email);
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+        } catch (JWTException $e) {
+            Log::error('JWT token creation failed: ' . $e->getMessage());
+            return response()->json(['error' => 'Could not create token'], 500);
         }
-
-        return response()->json(['error' => 'Unauthorized'], 401);
     }
 
     // Lấy thông tin người dùng từ JWT token

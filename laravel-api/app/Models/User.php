@@ -49,7 +49,7 @@ class User extends Authenticatable implements JWTSubject
         return self::all();
     }
 
-    public static function addUser($name, $email, $role)
+    public static function addUser($name, $email, $role, $password)
     {
         return self::create([
             'name' => $name,

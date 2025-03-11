@@ -12,12 +12,12 @@
           <font-awesome-icon :icon="['fas', isCollapsed ? 'chevron-right' : 'chevron-left']" class="toggle-btn" />
         </div>
         <ul>
-          <li>
+          <!-- <li>
             <router-link to="/dashboard">
               <font-awesome-icon :icon="['fas', 'gauge']" />
               <span v-if="!isCollapsed">Dashboard</span>
             </router-link>
-          </li>
+          </li> -->
           <li>
             <router-link to="/lectures">
               <font-awesome-icon :icon="['fas', 'video']" />
@@ -30,12 +30,12 @@
               <span v-if="!isCollapsed">Quản lý Người Dùng</span>
             </router-link>
           </li>
-          <li>
+          <!-- <li>
             <router-link to="/settings">
               <font-awesome-icon :icon="['fas', 'cog']" />
               <span v-if="!isCollapsed">Cài Đặt</span>
             </router-link>
-          </li>
+          </li> -->
           <li>
             <router-link to="/login">
               <font-awesome-icon :icon="['fas', 'sign-out-alt']" />
@@ -54,9 +54,18 @@
         </header>
         <!-- Main content -->
         <main class="content">
-          <h1>Welcome to PLT Solutions</h1>
-          <p>{{ msg }}</p>
-        </main>
+                <div class="welcome-container">
+                    <h1>Welcome to PLT SOLUTIONS COURSE</h1>
+                    <p>{{ msg }}</p>
+                    <div class="welcome-image">
+                        <img src="" alt="Welcome Image" />
+                    </div>
+                    <div class="welcome-description">
+                        <p>Explore our wide range of video courses and enhance your skills with PLT Solutions.</p>
+                        <router-link to="/lectures" class="btn btn-primary">Explore Courses</router-link>
+                    </div>
+                </div>
+          </main>
       </div>
     </div>
   </template>
