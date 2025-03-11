@@ -12,12 +12,6 @@
           <font-awesome-icon :icon="['fas', isCollapsed ? 'chevron-right' : 'chevron-left']" class="toggle-btn" />
         </div>
         <ul>
-          <!-- <li>
-            <router-link to="/dashboard">
-              <font-awesome-icon :icon="['fas', 'gauge']" />
-              <span v-if="!isCollapsed">Dashboard</span>
-            </router-link>
-          </li> -->
           <li>
             <router-link to="/lectures">
               <font-awesome-icon :icon="['fas', 'video']" />
@@ -30,12 +24,6 @@
               <span v-if="!isCollapsed">Quản lý Người Dùng</span>
             </router-link>
           </li>
-          <!-- <li>
-            <router-link to="/settings">
-              <font-awesome-icon :icon="['fas', 'cog']" />
-              <span v-if="!isCollapsed">Cài Đặt</span>
-            </router-link>
-          </li> -->
           <li>
             <router-link to="/login">
               <font-awesome-icon :icon="['fas', 'sign-out-alt']" />
@@ -79,7 +67,7 @@
   library.add(faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight);
   
   export default {
-    name: 'HomePage',
+    name: 'Admin',
     components: {
       FontAwesomeIcon
     },

@@ -8,14 +8,15 @@ import Dashboard from '@/views/Master/Dashboard.vue'
 import Home from '@/views/Master/Home.vue'
 import UserHome from '@/views/User/UserHome.vue'
 import UserManager from '@/views/Master/UserManager.vue'
-
+import VideoDetailPage from '@/views/Video/VideoDetailPage.vue';
+import HomePage from '@/views/User/HomePage.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/admin',
-      name: 'HomePage',
+      name: 'Admin',
       component: Home,
     },
     {
@@ -63,9 +64,20 @@ const router = createRouter({
     },
     {
       path:'/',
+      name: 'Home',
+      component: HomePage
+    },
+    {
+      path:'/course',
       name: 'User',
       component: UserHome
-    }
+    },
+    {
+      path: "/videodetail/:id",
+      name: "videos",
+      component: VideoDetailPage,
+    },
+    
   ],
 })
 

@@ -71,16 +71,16 @@
               .then(({ data }) => {
                   console.log(data);
                   alert("Login successfully");
-                  router.push({ name: 'HomePage' }); 
+                  router.push({ name: 'Admin' }); 
                   // Lưu token & role vào localStorage
                     localStorage.setItem("token", data.token);
                     localStorage.setItem("role", data.user.role); 
 
                     // Chuyển hướng theo role
                     if (data.user.role === "admin") {
-                        router.push({ name: "HomePage" }); // Chuyển đến trang Admin
+                        router.push({ name: "Admin" }); // Chuyển đến trang Admin
                     } else {
-                        router.push({ name: "User" }); // Chuyển đến trang User
+                        router.push({ name: "Home" }); // Chuyển đến trang User
                     }
               })
               .catch((error) => {
