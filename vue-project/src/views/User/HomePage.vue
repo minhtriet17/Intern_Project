@@ -9,7 +9,6 @@
             <ul class="nav-links">
                 <li><router-link to="/" @click="reloadPage">Trang chủ</router-link></li>
                 <li><router-link to="/course">Khóa học</router-link></li>
-                <li><router-link to="/login">Đăng xuất</router-link></li>
             </ul>
         </nav>
         <div class="homepage">
