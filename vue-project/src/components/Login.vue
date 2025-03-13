@@ -41,21 +41,27 @@
         methods: {
         async saveData() {
             try {
-            const response = await axios.post('http://localhost/api/login', this.user);
-            if (response.data.status) {
-                localStorage.setItem('token', response.data.token);
-                localStorage.setItem('role', response.data.role);
-                
-                if (response.data.role === 'admin') {
-                this.$router.push('/admin');
+                const { data } = await axios.post("http://127.0.0.1:8000/api/login", student);
+
+                if (data.status) {
+                    console.log("Login response:", data);
+
+                    // Lưu vào sessionStorage thay vì localStorage
+                    sessionStorage.setItem("token", data.token);
+                    sessionStorage.setItem("role", data.role); 
+
+                    // Chuyển hướng theo role
+                    if (data.role === "admin") {
+                        router.push("/admin");
+                    } else {
+                        router.push("/user");
+                    }
                 } else {
-                this.$router.push('/user');
+                    alert(data.message);
                 }
-            } else {
-                alert(response.data.message);
-            }
             } catch (error) {
-                alert('Login failed. Please check your credentials.');
+                console.error("Login error:", error);
+                alert("Login failed. Please check your credentials.");
             }
         }
         },
@@ -72,9 +78,10 @@
                   console.log(data);
                   alert("Login successfully");
                   router.push({ name: 'Admin' }); 
-                  // Lưu token & role vào localStorage
-                    localStorage.setItem("token", data.token);
-                    localStorage.setItem("role", data.user.role); 
+
+                    // Lưu vào sessionStorage thay vì localStorage
+                    sessionStorage.setItem("token", data.token);
+                    sessionStorage.setItem("role", data.role); 
 
                     // Chuyển hướng theo role
                     if (data.user.role === "admin") {

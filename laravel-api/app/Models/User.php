@@ -76,7 +76,10 @@ class User extends Authenticatable implements JWTSubject
 
     public static function deleteUser($id)
     {
-        $user = self::findOrFail($id);
+        $user = self::find($id);
+        if (!$user) {
+            throw new \Exception("User not found");
+        }
         return $user->delete();
     }
 }
