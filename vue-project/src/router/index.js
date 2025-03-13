@@ -80,5 +80,15 @@ const router = createRouter({
     
   ],
 })
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+  const role = localStorage.getItem("role") || sessionStorage.getItem("role");
 
+  if (to.path === "/admin" && (!token || role !== "admin")) {
+      // alert("Bạn không có quyền truy cập!");
+      next("/login");  // Chuyển hướng về trang login
+  } else {
+      next();  // Cho phép tiếp tục
+  }
+});
 export default router
