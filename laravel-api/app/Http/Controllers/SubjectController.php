@@ -17,7 +17,8 @@ class SubjectController extends Controller
 
     // Store a new subject
     public function store(Request $request)
-    {
+    { 
+        \Log::info('Request data:', $request->all());
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',

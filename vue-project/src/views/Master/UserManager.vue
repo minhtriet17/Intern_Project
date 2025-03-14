@@ -151,7 +151,7 @@
     methods: {
         async fetchUsers() {
             try {
-                const token = localStorage.getItem("token"); // Lấy token từ localStorage
+                const token = sessionStorage.getItem('token'); 
                 const response = await axios.get('http://127.0.0.1:8000/api/users', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
@@ -172,8 +172,16 @@
             }
         },
         async deleteUser(id) {
-            await axios.delete(`http://127.0.0.1:8000/api/users/${id}`);
-            this.fetchUsers();
+          try {
+              await axios.delete(`http://127.0.0.1:8000/api/users/${id}`, {
+                  headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+              });
+              alert("Xóa thành công!");
+              this.fetchUsers();
+          } catch (error) {
+              console.error("Lỗi xóa người dùng:", error.response);
+              alert("Xóa thất bại: " + error.response.data.message);
+          }
         },
         async updateUser() {
             try {
