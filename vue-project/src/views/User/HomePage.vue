@@ -2,12 +2,14 @@
     <div>
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-          <router-link to="/" @click="reloadPage" class="navbar-brand">PLT Solutions</router-link>
+          <router-link to="/" @click="reloadPage" class="navbar-brand">
+            <img src="/src/assets/logo_plt.png" class="navbar-logo">
+          </router-link>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
               <li class="nav-item">
                 <router-link to="/" @click="reloadPage" class="nav-link active" aria-current="page">Trang chủ</router-link>
               </li>
@@ -15,7 +17,7 @@
                 <router-link to="/course" class="nav-link">Bài giảng</router-link>
               </li>
               <li class="nav-item dropdown">
-                <router-link class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <router-link class="nav-link dropdown-toggle disabled" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Khóa học
                 </router-link>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -26,18 +28,17 @@
                 </ul>
               </li>
               <li class="nav-item">
-                <router-link class="nav-link disabled" to="/login" tabindex="-1" aria-disabled="true">Đăng xuất</router-link>
+                <router-link to="/" class="nav-link disabled">Liên hệ</router-link>
+              </li>
+              <li class="nav-item">
+                <router-link class="nav-link" to="/login" tabindex="-1" aria-disabled="true">Đăng xuất</router-link>
               </li>
             </ul>
-            <form class="d-flex">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-primary" type="submit">Search</button>
-            </form>
           </div>
         </div>
       </nav>
         
-        <div class="homepage">
+      <div class="homepage">
             <!-- Banner Chào Mừng -->
             <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
               <div class="carousel-indicators">
@@ -71,34 +72,42 @@
               </button>
             </div>
 
-            <!-- Giới thiệu -->
-            <section class="about-section">
-            <div class="about-content">
-                <h2>Tại sao chọn PLT SOLUTION COURSES?</h2>
-                <p>Chúng tôi cung cấp các khóa học trực tuyến chất lượng cao, giúp bạn phát triển kỹ năng và đạt được thành công.</p>
-                <ul>
-                <li>✅ Học từ các chuyên gia</li>
-                <li>✅ Nội dung cập nhật liên tục</li>
-                <li>✅ Linh hoạt thời gian học</li>
-                </ul>
-            </div>
-            <img src="/src/assets/faq.jpg" alt="E-learning" class="about-image">
-            </section>
 
-            <!-- Khóa học nổi bật -->
+            <!-- Bài giảng -->
             <section class="courses-section">
-            <h2>Khóa học nổi bật</h2>
+            <h2>Danh sách các bài giảng</h2>
             <div v-if="isLoading" class="loading">Đang tải...</div>
             <div v-else class="course-list">
-                <div v-for="course in featuredCourses" :key="course.id" class="course-card">
+                <div v-for="(course, index) in visibleLectures" :key="course.id" class="course-card">
                 <img :src="getThumbnailUrl(course.video_url)" :alt="course.title" class="course-img">
                 <h3>{{ course.title }}</h3>
                 <p>{{ course.description }}</p>
-                <router-link :to="'/videodetail/' + course.id" class="course-button">Xem chi tiết</router-link>
+                <router-link :to="'/videodetail/' + course.id" class="btn btn-outline-primary">Xem chi tiết</router-link>
                 </div>
             </div>
+            <button v-if="lectures.length > 6 && !showAllLectures" @click="toggleShowAllLectures" class="btn btn-primary">Xem Thêm</button>
             </section>
+      </div>
+
+        <!-- Footer Section -->
+      <footer class="text-center text-white">
+        <div class="container p-4 pb-0">
+          <section class="">
+            <p class="d-flex justify-content-center align-items-center">
+              <span class="me-3">Tạo tài khoản miễn phí:</span>
+              <router-link to="/login" type="button" class="btn btn-outline-light btn-rounded">
+                Đăng ký ngay!
+              </router-link>
+            </p>
+          </section>
         </div>
+        <div class="text-center p-3">
+          © 2025 Copyright:
+          <router-link class="text-white" to="/">PLT Solutions</router-link>
+        </div>
+
+      </footer>
+
     </div>
 </template>
 <script>
@@ -110,12 +119,16 @@
             return {
                 lectures: [],
                 isLoading: true,
+                showAllLectures: false,
             };
         },
         computed: {
             featuredCourses() {
                 // Chọn 3 khóa học đầu tiên làm khóa học nổi bật
                 return this.lectures.slice(0, 3);
+            },
+            visibleLectures() {
+                return this.showAllLectures ? this.lectures : this.lectures.slice(0, 6);
             }
         },
         methods: {
@@ -143,55 +156,58 @@
             getThumbnailUrl(url) {
                 const videoId = this.extractYouTubeId(url);
                 return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '/default-thumbnail.jpg';
+            },
+            toggleShowAllLectures() {
+                this.showAllLectures = !this.showAllLectures;
             }
         },
-        mounted() {
+        mounted() { 
             this.getLectures();
         }
     }
 </script>
-<style  scoped>
-
-
-/* About Section */
-.about-section {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 60px 10%;
-  background-color: #fefefe;
+<style scoped>
+/* Logo */
+.navbar-logo {
+  height: 100px; /* Adjust the height as needed */
+  width: auto;
 }
 
-.about-content {
-  max-width: 50%;
-}
+/*Nav item */
+  .nav-item{
+    margin-right: 15px;
+    font-size: 19px;
+  }
+  .nav-item:hover{
+    text-transform: uppercase;
+  }
+ .nav-item::after {
+     content: '';
+     display: block;
+     width: 0px;
+     height: 2px;
+     background: #3883e6;
+     transition: 0.4s
+ }
 
-.about-content h2 {
-  font-size: 2rem;
-  color: #333;
-}
+ .nav-item:hover::after {
+     width: 100%
+ }
 
-.about-content p {
-  font-size: 1.1rem;
-  margin: 10px 0;
-}
+ .navbar-dark .navbar-nav .active>.nav-link,
+ .navbar-dark .navbar-nav .nav-link.active,
+ .navbar-dark .navbar-nav .nav-link.show,
+ .navbar-dark .navbar-nav .show>.nav-link,
+ .navbar-dark .navbar-nav .nav-link:focus,
+ .navbar-dark .navbar-nav .nav-link:hover {
+     color: #324ee9
+ }
 
-.about-content ul {
-  padding: 0;
-  list-style: none;
-}
-
-.about-content li {
-  font-size: 1rem;
-  margin: 5px 0;
-}
-
-.about-image {
-  width: 40%;
-  border-radius: 10px;
-}
-
-/* Featured Courses */
+ .nav-link {
+     padding: 5px 5px;
+     transition: 0.2s
+ }
+/* Lectures */
 .courses-section {
   text-align: center;
   padding: 60px 10%;
@@ -213,9 +229,11 @@
   background: white;
   border-radius: 10px;
   padding: 15px;
-  width: 280px;
+  width: calc(33.33% - 20px); /* 3 cards per row */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s;
+  display: flex;
+  flex-direction: column;
 }
 
 .course-card:hover {
@@ -227,19 +245,45 @@
   border-radius: 5px;
 }
 
-.course-button {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 8px 15px;
-  background: #333;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  font-size: 0.9rem;
+.course-card h3 {
+  font-size: 1.2rem;
+  margin: 10px 0;
+  flex-grow: 1;
+  max-height: 4rem; /* Adjust the height as needed */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1; /* Number of lines to show */
+  -webkit-box-orient: vertical;
 }
 
-.course-button:hover {
-  background: #555;
+.course-card p {
+  font-size: 1rem;
+  margin: 10px 0;
+  flex-grow: 1;
+  max-height: 4rem; /* Adjust the height as needed */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.btn-primary {
+  margin-top: 20px; /* Adjust the value as needed */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .course-card {
+    width: calc(50% - 20px); /* 2 cards per row */
+  }
+}
+
+@media (max-width: 768px) {
+  .course-card {
+    width: calc(100% - 20px); /* 1 card per row */
+  }
 }
 
 .carousel {
@@ -299,4 +343,8 @@
   }
 }
 
+/* Footer Section */
+footer{
+  background-color:#3a3f5f;
+}
 </style>

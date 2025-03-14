@@ -17,7 +17,7 @@
                 <router-link to="/course" class="nav-link">Bài giảng</router-link>
               </li>
               <li class="nav-item dropdown">
-                <router-link class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <router-link class="nav-link dropdown-toggle disabled" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                   Khóa học
                 </router-link>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -28,13 +28,9 @@
                 </ul>
               </li>
               <li class="nav-item">
-                <router-link class="nav-link disabled" to="/login" tabindex="-1" aria-disabled="true">Đăng xuất</router-link>
+                <router-link class="nav-link" to="/login" tabindex="-1" aria-disabled="true">Đăng xuất</router-link>
               </li>
             </ul>
-            <form class="d-flex">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-primary" type="submit">Search</button>
-            </form>
           </div>
         </div>
       </nav>
