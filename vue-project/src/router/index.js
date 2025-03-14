@@ -11,6 +11,7 @@ import UserManager from '@/views/Master/UserManager.vue'
 import VideoDetailPage from '@/views/Video/VideoDetailPage.vue';
 import HomePage from '@/views/User/HomePage.vue';
 import SubjectManager from '@/views/Master/SubjectManager.vue';
+import CoursesListPage from '@/views/User/Courses/CoursesListPage.vue'
 
 
 const router = createRouter({
@@ -84,7 +85,11 @@ const router = createRouter({
       name: "videos",
       component: VideoDetailPage,
     },
-    
+    {
+      path: "/courselist",
+      name: "CourseList",
+      component: CoursesListPage,
+    },
   ],
 })
 router.beforeEach((to, from, next) => {

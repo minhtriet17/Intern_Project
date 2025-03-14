@@ -84,10 +84,26 @@
                     <label for="description">Mô Tả:</label>
                     <textarea id="description" v-model="newSubject.description" 
                     class="form-control" rows="5" style="width: 100%;"></textarea>
-                    <button @click="newSubject.id ? updateSubject() : addSubject()" class="btn btn-success">
-                    {{ newSubject.id ? "Cập Nhật" : "Thêm" }}
+                    <button @click="addSubject()" class="btn btn-success">
+                        Thêm
                     </button>
                     <button @click="showAddSubjectModal = false" class="btn btn-secondary">Hủy</button>
+                </div>
+            </div>
+            <!-- Modal Cập Nhật Môn Học -->
+            <div v-if="showUpdateSubjectModal" class="modal">
+                <div class="modal-content">
+                    <h2>Cập Nhật Môn Học</h2>
+                    <button @click="showUpdateSubjectModal = false" class="close-btn">&times;</button>
+                    <label>Tên Môn Học:</label>
+                    <input v-model="newSubject.name" type="text" />
+                    <label for="description">Mô Tả:</label>
+                    <textarea id="description" v-model="newSubject.description" 
+                    class="form-control" rows="5" style="width: 100%;"></textarea>
+                    <button @click="updateSubject()" class="btn btn-success">
+                        Cập Nhật
+                    </button>
+                    <button @click="showUpdateSubjectModal = false" class="btn btn-secondary">Hủy</button>
                 </div>
             </div>
           </div>
@@ -117,6 +133,7 @@ export default {
       subjects: [],
       isMobile: window.innerWidth <= 768,
       showAddSubjectModal: false,
+      showUpdateSubjectModal: false,
       newSubject: { 
         name: '', 
         description: '' }
@@ -205,14 +222,22 @@ export default {
           }
         });
         this.fetchSubjects();
-        this.showAddSubjectModal = false;
+        this.showUpdateSubjectModal = false;
       } catch (error) {
         console.error("Lỗi khi cập nhật môn học:", error);
       }
     },
+    openAddSubjectModal() {
+      this.newSubject = { name: '', description: '' };
+      this.showAddSubjectModal = true;
+    },
+    openUpdateSubjectModal(subject) {
+      this.newSubject = { ...subject };
+      this.showUpdateSubjectModal = true;
+    },
     editSubject(subject) {
       this.newSubject = { ...subject };
-      this.showAddSubjectModal = true;
+      this.showUpdateSubjectModal = true;
     },
     logout() {
       sessionStorage.removeItem("role");
