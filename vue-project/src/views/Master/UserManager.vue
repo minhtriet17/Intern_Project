@@ -50,7 +50,7 @@
             <main class="content">
                 <div class="user-manager">
                     <h1>Quản lý Người Dùng</h1>
-                    <button @click="showAddUserModal = true" class="btn btn-primary">Thêm Người Dùng</button>
+                    <button @click="openAddUserModal" class="btn btn-primary">Thêm Người Dùng</button>
                     
                     <table class="user-table">
                     <thead>
@@ -138,12 +138,7 @@
           // Xóa toàn bộ localStorage để chắc chắn
           localStorage.clear();
           sessionStorage.clear();
-
-          // Reload trang để Vue Router cập nhật
-          window.location.reload();
-
-          // Điều hướng về trang login
-          router.push("/login");
+          this.$router.push("/login").then(() => window.location.reload());
         };
         return {
           logout // 
@@ -202,15 +197,17 @@
             }
         },
         async deleteUser(id) {
+          if (!confirm("Bạn có chắc chắn muốn xóa người dùng này?")) return;
           try {
+              const token = sessionStorage.getItem('token');
               await axios.delete(`http://127.0.0.1:8000/api/users/${id}`, {
-                  headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+                headers: { Authorization: `Bearer ${token}` }
               });
               alert("Xóa thành công!");
               this.fetchUsers();
           } catch (error) {
               console.error("Lỗi xóa người dùng:", error.response);
-              alert("Xóa thất bại: " + error.response.data.message);
+              alert("Xóa thất bại: " + (error.response?.data?.message || "Lỗi không xác định"));
           }
         },
         async updateUser() {
@@ -246,6 +243,10 @@
             } else {
             this.isCollapsed = false;
             }
+        },
+        openAddUserModal() {
+            this.newUser = { name: '', email: '', password: '', role: 'user' };
+            this.showAddUserModal = true;
         }
     }
   };
@@ -373,6 +374,10 @@
 }
 
 @media (max-width: 480px) {
+  .modal-content {
+    width: 90%;
+    max-width: 300px;
+  }
   .sidebar {
     position: fixed;
     left: -250px;
