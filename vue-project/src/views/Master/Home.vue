@@ -19,11 +19,18 @@
             </router-link>
           </li>
           <li>
+            <router-link to="/subjectmanager">
+              <font-awesome-icon :icon="['fas', 'book']" />
+              <span v-if="!isCollapsed">Quản lý Môn Học</span>
+            </router-link>
+          </li>
+          <li>
             <router-link to="/usermanager">
               <font-awesome-icon :icon="['fas', 'users']" />
               <span v-if="!isCollapsed">Quản lý Người Dùng</span>
             </router-link>
           </li>
+          
           <li @click="logout">
             <a href="#">
               <font-awesome-icon :icon="['fas', 'sign-out-alt']" />
@@ -62,10 +69,10 @@
 
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { library } from '@fortawesome/fontawesome-svg-core';
-  import { faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+  import { faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faBook  } from '@fortawesome/free-solid-svg-icons';
   import { useRouter } from 'vue-router';
   
-  library.add(faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight);
+  library.add(faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faBook);
   
   export default {
     name: 'Admin',
@@ -113,6 +120,7 @@
     mounted() {
       window.addEventListener('resize', this.checkScreenSize);
       const role = sessionStorage.getItem("role") || localStorage.getItem("role");
+      console.log("Kiểm tra role:", role); 
       if (role !== "admin") {
           // alert("Bạn không có quyền truy cập trang này!");
           this.$router.push("/login"); // Quay lại trang login nếu không phải admin

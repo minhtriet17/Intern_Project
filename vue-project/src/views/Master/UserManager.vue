@@ -19,6 +19,12 @@
             </router-link>
           </li>
           <li>
+            <router-link to="/subjectmanager">
+              <font-awesome-icon :icon="['fas', 'book']" />
+              <span v-if="!isCollapsed">Quản lý Môn Học</span>
+            </router-link>
+          </li>
+          <li>
             <router-link to="/usermanager">
               <font-awesome-icon :icon="['fas', 'users']" />
               <span v-if="!isCollapsed">Quản lý Người Dùng</span>
@@ -103,9 +109,9 @@
     import axios from 'axios';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { library } from '@fortawesome/fontawesome-svg-core';
-  import { faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faSearch } from '@fortawesome/free-solid-svg-icons';
+  import { faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faSearch, faBook } from '@fortawesome/free-solid-svg-icons';
   
-  library.add(faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faSearch);
+  library.add(faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faSearch, faBook);
   
   export default {
     name: 'UserManager',
@@ -131,7 +137,7 @@
     mounted() {
         
       window.addEventListener('resize', this.checkScreenSize);
-      const role = localStorage.getItem("role"); // Lấy role từ localStorage
+      const role = sessionStorage.getItem("role") || localStorage.getItem("role");
       if (role !== "admin") {
           alert("Bạn không có quyền truy cập trang này!");
           this.$router.push("/login"); // Quay lại trang login nếu không phải admin
