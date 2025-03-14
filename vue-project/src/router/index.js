@@ -10,6 +10,8 @@ import UserHome from '@/views/User/UserHome.vue'
 import UserManager from '@/views/Master/UserManager.vue'
 import VideoDetailPage from '@/views/Video/VideoDetailPage.vue';
 import HomePage from '@/views/User/HomePage.vue';
+import SubjectManager from '@/views/Master/SubjectManager.vue';
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -61,6 +63,11 @@ const router = createRouter({
       path:'/usermanager',
       name: 'UserManager',
       component: UserManager
+    },
+    {
+      path:'/subjectmanager',
+      name: 'SubjectManager',
+      component: SubjectManager
     },
     {
       path:'/',

@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\UserController;
 
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\SubjectController;
 
 Route::apiResource('lectures', LectureController::class);
 
@@ -48,4 +49,12 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('role:admin')->get('/admin', function () {
     return view('admin.index');
+});
+
+Route::middleware('auth:api', 'verified')->group(function () {
+    Route::get('/subjects', [SubjectController::class, 'index']);
+    Route::post('/subjects', [SubjectController::class, 'store']);
+    Route::get('/subjects/{id}', [SubjectController::class, 'show']);
+    Route::put('/subjects/{id}', [SubjectController::class, 'update']);
+    Route::delete('/subjects/{id}', [SubjectController::class, 'destroy']);
 });
