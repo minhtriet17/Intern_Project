@@ -70,18 +70,5 @@ class LoginController extends Controller
             'token' => $token,
             'role' => $user->role // Trả về role để frontend xử lý
         ], 200);
-
-        // // Trả về thông tin đăng nhập
-        // return response()->json([
-        //     'status' => true,
-        //     'message' => 'Đăng nhập thành công',
-        //     'user' => [
-        //         'id' => $user->id,
-        //         'name' => $user->name,
-        //         'email' => $user->email,
-        //         'role' => $user->role,
-        //     ],
-        //     'token' => $token
-        // ], 200);
     }
 }

@@ -48,10 +48,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('role:admin')->get('/admin', function () {
-    return view('admin.index');
+    return response()->json(['message' => 'Welcome, Admin']);
 });
 
-Route::middleware('auth:api', 'verified')->group(function () {
+Route::middleware('auth.jwt')->group(function () {
     Route::get('/subjects', [SubjectController::class, 'index']);
     Route::post('/subjects', [SubjectController::class, 'store']);
     Route::get('/subjects/{id}', [SubjectController::class, 'show']);
