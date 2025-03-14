@@ -51,10 +51,8 @@ Route::middleware('role:admin')->get('/admin', function () {
     return response()->json(['message' => 'Welcome, Admin']);
 });
 
-Route::middleware('auth.jwt')->group(function () {
-    Route::get('/subjects', [SubjectController::class, 'index']);
-    Route::post('/subjects', [SubjectController::class, 'store']);
-    Route::get('/subjects/{id}', [SubjectController::class, 'show']);
-    Route::put('/subjects/{id}', [SubjectController::class, 'update']);
-    Route::delete('/subjects/{id}', [SubjectController::class, 'destroy']);
-});
+Route::get('/subjects', [SubjectController::class, 'index']);
+Route::post('/subjects', [SubjectController::class, 'store']);
+Route::get('/subjects/{id}', [SubjectController::class, 'show']);
+Route::put('/subjects/{id}', [SubjectController::class, 'update']);
+Route::delete('/subjects/{id}', [SubjectController::class, 'destroy']);

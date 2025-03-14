@@ -10,10 +10,15 @@ class SubjectController extends Controller
 {
     // Get all subjects
     public function index()
-    {
+{
+    try {
         $subjects = Subject::all();
         return response()->json($subjects);
+    } catch (\Exception $e) {
+        \Log::error('Error fetching subjects: ' . $e->getMessage());
+        return response()->json(['message' => 'An error occurred while fetching subjects'], 500);
     }
+}
 
     // Store a new subject
     public function store(Request $request)
@@ -72,10 +77,11 @@ class SubjectController extends Controller
         $subject = Subject::find($id);
 
         if (!$subject) {
-            return response()->json(['message' => 'Subject not found'], 404);
+            return response()->json(['message' => 'Môn học không tồn tại'], 404);
         }
 
         $subject->delete();
+        
         return response()->json(['message' => 'Subject deleted successfully']);
     }
 }

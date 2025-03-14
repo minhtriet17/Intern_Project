@@ -81,8 +81,9 @@
                     <button @click="showAddSubjectModal = false" class="close-btn">&times;</button>
                     <label>Tên Môn Học:</label>
                     <input v-model="newSubject.name" type="text" />
-                    <label>Mô Tả:</label>
-                    <input v-model="newSubject.description" type="text" />
+                    <label for="description">Mô Tả:</label>
+                    <textarea id="description" v-model="newSubject.description" 
+                    class="form-control" rows="5" style="width: 100%;"></textarea>
                     <button @click="newSubject.id ? updateSubject() : addSubject()" class="btn btn-success">
                     {{ newSubject.id ? "Cập Nhật" : "Thêm" }}
                     </button>
@@ -116,7 +117,9 @@ export default {
       subjects: [],
       isMobile: window.innerWidth <= 768,
       showAddSubjectModal: false,
-      newSubject: { name: '', description: '' }
+      newSubject: { 
+        name: '', 
+        description: '' }
     };
   },
   mounted() {
@@ -159,6 +162,7 @@ export default {
         this.subjects = response.data;
       } catch (error) {
         console.error("Lỗi khi lấy danh sách môn học:", error);
+        alert("Đã xảy ra lỗi khi lấy danh sách môn học. Vui lòng thử lại sau.");
       }
     },
     async addSubject() {
@@ -170,6 +174,8 @@ export default {
           }
         });
         this.fetchSubjects();
+        alert("Thêm môn học thành công!"); // Hiển thị thông báo
+        this.newSubject = { name: '', description: '' }; // Reset form
         this.showAddSubjectModal = false;
       } catch (error) {
         console.error("Lỗi khi thêm môn học:", error);
