@@ -30,11 +30,11 @@
               <span v-if="!isCollapsed">Quản lý Người Dùng</span>
             </router-link>
           </li>
-          <li>
-            <router-link to="/login">
+          <li @click="logout">
+            <a href="#">
               <font-awesome-icon :icon="['fas', 'sign-out-alt']" />
               <span v-if="!isCollapsed">Đăng Xuất</span>
-            </router-link>
+            </a>
           </li>
         </ul>
       </aside>
@@ -106,7 +106,8 @@
 </template>
   
   <script>
-    import axios from 'axios';
+  import axios from 'axios';  
+  import { useRouter } from 'vue-router';
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faSearch, faBook } from '@fortawesome/free-solid-svg-icons';
@@ -117,6 +118,36 @@
     name: 'UserManager',
     components: {
       FontAwesomeIcon
+    },
+    setup() {
+        const router = useRouter();
+
+        const logout = () => {
+          console.log("Đang đăng xuất...");
+
+          // Xóa toàn bộ token & role
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          sessionStorage.removeItem("token");
+          sessionStorage.removeItem("role");
+
+          // Kiểm tra nếu token còn tồn tại
+          console.log("Token sau khi xóa:", localStorage.getItem("token"));
+          console.log("Role sau khi xóa:", localStorage.getItem("role"));
+
+          // Xóa toàn bộ localStorage để chắc chắn
+          localStorage.clear();
+          sessionStorage.clear();
+
+          // Reload trang để Vue Router cập nhật
+          window.location.reload();
+
+          // Điều hướng về trang login
+          router.push("/login");
+        };
+        return {
+          logout // 
+      };
     },
     data() {
       return {
@@ -139,7 +170,6 @@
       window.addEventListener('resize', this.checkScreenSize);
       const role = sessionStorage.getItem("role") || localStorage.getItem("role");
       if (role !== "admin") {
-          alert("Bạn không có quyền truy cập trang này!");
           this.$router.push("/login"); // Quay lại trang login nếu không phải admin
       } else {
         this.fetchUsers(); //Gọi API lấy danh sách người dùng
