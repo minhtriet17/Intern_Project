@@ -1,17 +1,15 @@
 <template>
-    <div class="container mt-5">
+    <div>
         <div class="card">
             <div class="card-header">
                 <h4>Add Lectures</h4>
             </div>
             <div class="card-body">
-
                 <ul v-if="Object.keys(errorList).length > 0" class="alert alert-warning">
                     <li class="mb-0 ms-3" v-for="(error, index) in this.errorList" :key="index">
                         {{ error[0] }}
                     </li>
                 </ul>
-                
                 <div class="mb-3">
                     <label for="">Title</label>
                     <input type="text" v-model="model.title" class="form-control" />

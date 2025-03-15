@@ -47,6 +47,11 @@
       </button>
     </div>
 
+    <!-- Search Input -->
+    <div class="search-box">
+      <input type="text" v-model="searchQuery" placeholder="Search lectures..." class="form-control" />
+    </div>
+
     <div class="card-body">
       <div class="table-responsive">
         <div class="table-bordered">
@@ -91,15 +96,23 @@ export default {
       lectures: [],
       categories: [],
       selectedCategory: null,
+      searchQuery: '', // Add searchQuery data property
       isLoading: true
     };
   },
   computed: {
     filteredLectures() {
-      if (!this.selectedCategory) {
-        return this.lectures;
+      let filtered = this.lectures;
+      if (this.selectedCategory) {
+        filtered = filtered.filter(lecture => lecture.category === this.selectedCategory);
       }
-      return this.lectures.filter(lecture => lecture.category === this.selectedCategory);
+      if (this.searchQuery) {
+        filtered = filtered.filter(lecture => 
+          lecture.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          lecture.description.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      }
+      return filtered;
     }
   },
   mounted() {
@@ -234,4 +247,37 @@ export default {
   opacity: 0.7;
   color: white;
 }
+
+.search-box {
+  margin: 20px 0;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.search-box input {
+  width: 100%;
+  max-width: 500px; /* Limit the maximum width */
+  padding: 10px 20px 10px 40px; /* Add padding for the search icon */
+  border-radius: 25px; /* Make the input rounded */
+  border: 1px solid #ccc;
+  transition: border-color 0.3s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+.search-box input:focus {
+  border-color: #007bff; /* Change border color on focus */
+  outline: none;
+}
+
+.search-box .search-icon {
+  position: absolute;
+  left: 15px; /* Position the icon inside the input */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #777;
+  pointer-events: none; /* Prevent the icon from blocking input clicks */
+  font-size: 18px; /* Adjust the icon size */
+}
+
 </style>
