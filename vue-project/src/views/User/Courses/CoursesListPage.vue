@@ -16,19 +16,11 @@
               <li class="nav-item">
                 <router-link to="/course" class="nav-link">Bài giảng</router-link>
               </li>
-              <li class="nav-item dropdown">
-                <router-link class="nav-link dropdown-toggle disabled" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Khóa học
-                </router-link>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
+              <li class="nav-item">
+                <router-link to="/courselist" class="nav-link">Khóa học</router-link>
               </li>
               <li class="nav-item">
-                <router-link to="/" class="nav-link disabled">Liên hệ</router-link>
+                <router-link to="/" class="nav-link">Liên hệ</router-link>
               </li>
               <li class="nav-item">
                 <router-link class="nav-link" to="/login" tabindex="-1" aria-disabled="true">Đăng xuất</router-link>

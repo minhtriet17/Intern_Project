@@ -12,6 +12,7 @@ import VideoDetailPage from '@/views/Video/VideoDetailPage.vue';
 import HomePage from '@/views/User/HomePage.vue';
 import SubjectManager from '@/views/Master/SubjectManager.vue';
 import CoursesListPage from '@/views/User/Courses/CoursesListPage.vue'
+import LandingPage from '@/views/User/LandingPage.vue'
 
 
 const router = createRouter({
@@ -89,6 +90,11 @@ const router = createRouter({
       path: "/courselist",
       name: "CourseList",
       component: CoursesListPage,
+    },
+    {
+      path: "/landingpage",
+      name: "LandingPage",
+      component: LandingPage,
     },
   ],
 })

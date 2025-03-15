@@ -16,24 +16,11 @@
               <li class="nav-item">
                 <router-link to="/course" class="nav-link">Bài giảng</router-link>
               </li>
-              <li class="nav-item dropdown">
-                <router-link class="nav-link dropdown-toggle" 
-                          to="/courselist" 
-                          id="navbarDropdown" 
-                          role="button" 
-                          data-bs-toggle="dropdown" 
-                          aria-expanded="false">
-                Khóa học
-              </router-link>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="/courselist">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
+              <li class="nav-item">
+                <router-link to="/courselist" class="nav-link">Khóa học</router-link>
               </li>
               <li class="nav-item">
-                <router-link to="/" class="nav-link disabled">Liên hệ</router-link>
+                <router-link to="/contact" class="nav-link">Liên hệ</router-link>
               </li>
               
             </ul>
@@ -53,13 +40,18 @@
                 <div class="carousel-item active">
                   <img src="/src/assets/anh1.jpg" class="d-block w-100" alt="...">
                   <div class="carousel-caption d-none d-md-block">
-                    <h1>Chào mừng đến với <span class="highlight">PLT SOLUTION COURSES</span></h1>
+                    <h1>Chào mừng đến với <span class="highlight">PLT SOLUTIONS COURSES</span></h1>
                     <p>Nâng cao kỹ năng của bạn với các khóa học chất lượng hàng đầu.</p>
                     <router-link to="/course" class="btn btn-primary">Khám phá khóa học</router-link>
                   </div>
                 </div>
                 <div class="carousel-item">
                   <img src="/src/assets/anh2.jpg" class="d-block w-100" alt="...">
+                  <div class="carousel-caption d-none d-md-block">
+                    <h1>Tìm hiểu thêm về<span class="highlight">PLT SOLUTIONS</span></h1>
+                    <p>Nâng cao kỹ năng của bạn với các khóa học chất lượng hàng đầu.</p>
+                    <router-link to="/landingpage" class="btn btn-primary">Khám phá ngay</router-link>
+                  </div>
                 </div>
                 <div class="carousel-item">
                   <img src="/src/assets/anh3.jpg" class="d-block w-100" alt="...">
@@ -296,7 +288,9 @@
   border-radius: 10px; /* Optional: Add rounded corners */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow */
 }
-
+.carousel-item {
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
 .carousel-inner img {
   border-radius: 10px; /* Optional: Add rounded corners to images */
 }
