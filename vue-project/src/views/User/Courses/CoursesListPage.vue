@@ -43,7 +43,7 @@
       <div v-if="courses.length > 0" class="row">
         <div v-for="course in courses" :key="course.id" class="col-md-4 mb-4">
           <div class="card">
-            <img v-if="course.image" :src="course.image" class="card-img-top" alt="Hình ảnh khóa học">
+            <img v-if="course.thumbnail" :src="course.thumbnail" class="card-img-top" alt="Hình ảnh khóa học">
             <div class="card-body">
               <h5 class="card-title">{{ course.name }}</h5>
               <p class="card-text">{{ course.description }}</p>
@@ -70,7 +70,10 @@ export default {
     methods: {
         async fetchCourses() {
             try {
-                const response = await axios.get('http://localhost:8000/api/subjects'); // Gọi API từ backend
+                const token = sessionStorage.getItem('token');
+                const response = await axios.get('http://localhost:8000/api/subjects', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                }); // Gọi API từ backend
                 this.courses = response.data;
             } catch (error) {
                 console.error("Lỗi khi tải danh sách khóa học:", error);
@@ -129,8 +132,39 @@ export default {
   border-radius: 10px;
   overflow: hidden;
 }
+
 .card img {
-  height: 200px;
-  object-fit: cover;
+  width: 100%; /* Đảm bảo ảnh chiếm toàn bộ chiều rộng của card */
+  height: 200px; /* Chiều cao cố định trên màn hình lớn */
+  object-fit: cover; /* Giữ tỷ lệ ảnh, cắt bớt phần thừa */
+  border-radius: 10px 10px 0 0; /* Bo góc trên */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
+
+/* Hiệu ứng hover khi rê chuột */
+.card img:hover {
+  transform: scale(1.05); /* Phóng to nhẹ khi hover */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ */
+}
+
+/* Responsive cho màn hình nhỏ (tablet, mobile) */
+@media (max-width: 1024px) {
+  .card img {
+    height: 180px; /* Giảm chiều cao trên tablet */
+  }
+}
+
+@media (max-width: 768px) {
+  .card img {
+    height: 160px; /* Giảm chiều cao trên mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .card img {
+    height: auto; /* Chiều cao tự động để không méo ảnh trên màn hình siêu nhỏ */
+    max-height: 150px; /* Giới hạn chiều cao để ảnh không quá to */
+  }
+}
+
 </style>

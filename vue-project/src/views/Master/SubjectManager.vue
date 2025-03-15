@@ -59,6 +59,7 @@
                   <th>ID</th>
                   <th>Tên Môn Học</th>
                   <th>Mô Tả</th>
+                  <th>Hình Ảnh</th>
                   <th>Hành Động</th>
                 </tr>
               </thead>
@@ -67,6 +68,10 @@
                   <td>{{ subject.id }}</td>
                   <td>{{ subject.name }}</td>
                   <td>{{ subject.description }}</td>
+                  <td>
+                    <img v-if="subject.thumbnail" :src="subject.thumbnail" alt="Thumbnail" class="thumbnail-img" />
+                    <span v-else>Không có ảnh</span>
+                  </td>
                   <td>
                     <button @click="editSubject(subject)" class="btn btn-warning">Sửa</button>
                     <button @click="deleteSubject(subject.id)" class="btn btn-danger">Xóa</button>
@@ -84,6 +89,13 @@
                     <label for="description">Mô Tả:</label>
                     <textarea id="description" v-model="newSubject.description" 
                     class="form-control" rows="5" style="width: 100%;"></textarea>
+
+                    <input type="file" @change="handleThumbnailUpload" accept="image/*" />
+                    <div v-if="newSubject.thumbnailPreview">
+                      <h4>Ảnh Xem Trước:</h4>
+                      <img :src="newSubject.thumbnailPreview" alt="Thumbnail Preview" class="preview-img" />
+                    </div>
+
                     <button @click="addSubject()" class="btn btn-success">
                         Thêm
                     </button>
@@ -100,6 +112,13 @@
                     <label for="description">Mô Tả:</label>
                     <textarea id="description" v-model="newSubject.description" 
                     class="form-control" rows="5" style="width: 100%;"></textarea>
+
+                    <input type="file" @change="handleThumbnailUpload" accept="image/*" />
+                    <div v-if="newSubject.thumbnailPreview">
+                      <h4>Ảnh Xem Trước:</h4>
+                      <img :src="newSubject.thumbnailPreview" alt="Thumbnail Preview" class="preview-img" />
+                    </div>
+
                     <button @click="updateSubject()" class="btn btn-success">
                         Cập Nhật
                     </button>
@@ -136,7 +155,8 @@ export default {
       showUpdateSubjectModal: false,
       newSubject: { 
         name: '', 
-        description: '' }
+        description: '',
+        thumbnail: null}
     };
   },
   mounted() {
@@ -185,14 +205,30 @@ export default {
     async addSubject() {
       try {
         const token = sessionStorage.getItem('token');
-        await axios.post('http://127.0.0.1:8000/api/subjects', this.newSubject, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+
+        const formData = new FormData();
+        formData.append('name', this.newSubject.name);
+        formData.append('description', this.newSubject.description);
+
+        if (this.newSubject.thumbnail) {
+          formData.append('thumbnail', this.newSubject.thumbnail);
+        }
+
+        const response = await axios.post('http://127.0.0.1:8000/api/subjects', formData, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
         });
+
+        console.log(response.data);
+
+        // Thêm môn học mới vào danh sách mà không cần fetch lại từ server
+        this.subjects.push(response.data); 
+
         this.fetchSubjects();
         alert("Thêm môn học thành công!"); // Hiển thị thông báo
-        this.newSubject = { name: '', description: '' }; // Reset form
+        this.newSubject = { name: '', description: '', thumbnail: null, thumbnailPreview: null }; // Reset form
         this.showAddSubjectModal = false;
       } catch (error) {
         console.error("Lỗi khi thêm môn học:", error);
@@ -216,11 +252,25 @@ export default {
     async updateSubject() {
       try {
         const token = sessionStorage.getItem('token');
-        await axios.put(`http://127.0.0.1:8000/api/subjects/${this.newSubject.id}`, this.newSubject, {
+
+        const formData = new FormData();
+        formData.append('name', this.newSubject.name);
+        formData.append('description', this.newSubject.description);
+
+        if (this.newSubject.thumbnail) {
+          formData.append('thumbnail', this.newSubject.thumbnail);
+        } else if (this.newSubject.thumbnailPreview) {
+          // Nếu không có ảnh mới, gửi lại ảnh cũ
+          formData.append('thumbnail', this.newSubject.thumbnailPreview);
+        }
+
+        await axios.post(`http://127.0.0.1:8000/api/subjects/${this.newSubject.id}?_method=PUT`, formData, {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
           }
         });
+
         this.fetchSubjects();
         this.showUpdateSubjectModal = false;
       } catch (error) {
@@ -232,7 +282,13 @@ export default {
       this.showAddSubjectModal = true;
     },
     openUpdateSubjectModal(subject) {
-      this.newSubject = { ...subject };
+      this.newSubject = {
+        id: subject.id,
+        name: subject.name,
+        description: subject.description,
+        thumbnailPreview: subject.thumbnail, // Lưu ảnh cũ để hiển thị
+        thumbnail: null // Đặt lại để tránh lỗi khi cập nhật
+      };
       this.showUpdateSubjectModal = true;
     },
     editSubject(subject) {
@@ -244,7 +300,23 @@ export default {
       localStorage.removeItem("role");
       sessionStorage.removeItem('token');
       this.$router.push("/login");
+    },
+    handleThumbnailUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.newSubject.thumbnail = file;
+
+        // Hiển thị ảnh tạm thời trước khi gửi lên server
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.newSubject.thumbnailPreview = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        console.log("Không có ảnh nào được chọn");
+      }
     }
+
   }
 };
 </script>
@@ -252,6 +324,7 @@ export default {
   <style scoped>
   .admin-home {
     display: flex;
+    flex-direction: row;
   }
   .sidebar {
     width: 250px;
@@ -260,14 +333,18 @@ export default {
     padding: 20px;
     height: 100vh;
     transition: width 0.3s;
-    position: relative;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    z-index: 1000;
   }
   .sidebar.collapsed {
     width: 80px;
   }
+  
   .toggle-container {
     display: flex;
     justify-content: center;
@@ -312,6 +389,7 @@ export default {
   .sidebar.collapsed .logo-container h2 {
     display: none;
     font-size: 14px; /* Kích thước nhỏ hơn khi sidebar thu gọn */
+    opacity: 0;
   }
   .sidebar ul {
     list-style: none;
@@ -362,11 +440,19 @@ export default {
   }
   .sidebar .logo-container h2 {
     display: none;
+    transition: opacity 0.3s;
   }
   .toggle-container {
     position: absolute;
-    top: 10px;
+    top: 20px;
     right: 10px;
+    cursor: pointer;
+    background: #444;
+    padding: 5px;
+    border-radius: 50%;
+  }
+  .main-container {
+    margin-left: 0;
   }
 }
 
@@ -380,13 +466,20 @@ export default {
   .sidebar.show {
     left: 0;
   }
+  .toggle-container {
+    top: 15px;
+    right: -50px;
+  }
 }
 
+/* Main Content */
 .main-container {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin-left: 250px;
+  transition: margin-left 0.3s;
 }
 
 /* Header */
@@ -400,6 +493,10 @@ export default {
   position: sticky;
   top: 0;
   z-index: 1000;
+}
+
+.sidebar.collapsed + .main-container {
+  margin-left: 80px;
 }
 
 /* Thanh tìm kiếm */
@@ -474,6 +571,53 @@ export default {
 .modal-content .h2 {
   font-size: 16px;
 }
+.close-btn {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+.thumbnail-img {
+  width: 80px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.preview-img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 350px;
+  text-align: center;
+  position: relative;
+}
+
 .close-btn {
   position: absolute;
   right: 10px;
