@@ -2,11 +2,11 @@
     <div class="admin-home">
       <aside :class="['sidebar', { collapsed: isCollapsed }]">
         <router-link to="/admin" class="logo-link">
-          <img src="/logo.svg" alt="Logo" class="logo" />
+          <img src="/logo_plt.png" alt="Logo" class="logo" />
         </router-link>
         
         <div class="logo-container">
-          <h2 v-if="!isCollapsed">PLT SOLUTION</h2>
+          <h2 v-if="!isCollapsed">PLT SOLUTION ADMIN</h2>
         </div>
         <div class="toggle-container" @click="toggleSidebar">
           <font-awesome-icon :icon="['fas', isCollapsed ? 'chevron-right' : 'chevron-left']" class="toggle-btn" />
@@ -28,6 +28,12 @@
             <router-link to="/usermanager">
               <font-awesome-icon :icon="['fas', 'users']" />
               <span v-if="!isCollapsed">Quản lý Người Dùng</span>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/contactmanager">
+              <font-awesome-icon :icon="['fas', 'envelope']" />
+              <span v-if="!isCollapsed">Quản lý liên hệ</span>
             </router-link>
           </li>
           
@@ -53,7 +59,7 @@
                     <h1>Welcome to PLT SOLUTIONS COURSE</h1>
                     <p>{{ msg }}</p>
                     <div class="welcome-image">
-                        <img src="" alt="Welcome Image" />
+                        <img src="/plt-main-logo.jpg" alt="Welcome Image" />
                     </div>
                     <div class="welcome-description">
                         <p>Explore our wide range of video courses and enhance your skills with PLT Solutions.</p>
@@ -69,10 +75,10 @@
 
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { library } from '@fortawesome/fontawesome-svg-core';
-  import { faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faBook  } from '@fortawesome/free-solid-svg-icons';
+  import { faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faBook, faEnvelope  } from '@fortawesome/free-solid-svg-icons';
   import { useRouter } from 'vue-router';
   
-  library.add(faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faBook);
+  library.add(faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faBook, faEnvelope);
   
   export default {
     name: 'Admin',
@@ -107,7 +113,7 @@
       };
       return {
         logout // 
-    };
+      };
     },
     data() {
       return {
@@ -199,13 +205,13 @@
     margin-bottom: 20px;
   }
   .logo-container h2 {
-    font-size: 30px;
+    font-size: 20px;
     transition: font-size 0.3s;
   }
   .logo {
     cursor: pointer; /* Hiển thị con trỏ khi rê chuột vào */
     transition: transform 0.2s;
-    width: 40px;
+    width: 250px;
     height: auto;
   }
   .logo:hover {
@@ -256,6 +262,48 @@
   .content {
     flex-grow: 1;
     padding: 20px;
+  }
+
+  .welcome-container {
+    text-align: center;
+    padding: 50px 20px;
+  }
+
+  .welcome-image {
+    margin: 20px 0;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .welcome-image img {
+    width: 100%; /* Điều chỉnh ảnh để nó chiếm toàn bộ chiều rộng của khối */
+    max-width: 500px; /* Giới hạn kích thước tối đa của ảnh */
+    height: auto;
+    border-radius: 8px; /* Bo góc ảnh */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng khi hover */
+  }
+
+  .welcome-image img:hover {
+    transform: scale(1.05); /* Phóng to ảnh khi hover */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ khi hover */
+  }
+
+  .welcome-description {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    text-decoration: none;
+    color: white;
+    background-color: #007bff;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+
+  .btn:hover {
+    background-color: #0056b3;
   }
 
   @media (max-width: 768px) {

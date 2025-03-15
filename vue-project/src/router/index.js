@@ -13,6 +13,8 @@ import HomePage from '@/views/User/HomePage.vue';
 import SubjectManager from '@/views/Master/SubjectManager.vue';
 import CoursesListPage from '@/views/User/Courses/CoursesListPage.vue'
 import LandingPage from '@/views/User/LandingPage.vue'
+import ContactForm from '@/views/User/ContactForm.vue'
+import ContactManager from '@/views/Master/ContactManager.vue'
 
 
 const router = createRouter({
@@ -95,6 +97,16 @@ const router = createRouter({
       path: "/landingpage",
       name: "LandingPage",
       component: LandingPage,
+    },
+    {
+      path: "/contact",
+      name: "Contact",
+      component: ContactForm,
+    },
+    {
+      path: "/contactmanager",
+      name: "ContactManager",
+      component: ContactManager,
     },
   ],
 })

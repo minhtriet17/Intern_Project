@@ -2,10 +2,10 @@
     <div class="admin-home">
       <aside :class="['sidebar', { collapsed: isCollapsed }]">
         <router-link to="/admin" class="logo-link">
-          <img src="/logo.svg" alt="Logo" class="logo" />
+          <img src="/logo_plt.png" alt="Logo" class="logo" />
         </router-link>
         <div class="logo-container">
-          <h2 v-if="!isCollapsed">PLT SOLUTION</h2>
+          <h2 v-if="!isCollapsed">PLT SOLUTION ADMIN</h2>
         </div>
         <div class="toggle-container" @click="toggleSidebar">
           <font-awesome-icon :icon="['fas', isCollapsed ? 'chevron-right' : 'chevron-left']" class="toggle-btn" />
@@ -27,6 +27,12 @@
             <router-link to="/usermanager">
               <font-awesome-icon :icon="['fas', 'users']" />
               <span v-if="!isCollapsed">Quản lý Người Dùng</span>
+            </router-link>
+          </li>
+          <li>
+            <router-link to="/contactmanager">
+              <font-awesome-icon :icon="['fas', 'envelope']" />
+              <span v-if="!isCollapsed">Quản lý liên hệ</span>
             </router-link>
           </li>
           <li @click="logout">
@@ -99,11 +105,11 @@
 
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { library } from '@fortawesome/fontawesome-svg-core';
-  import { faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faSearch, faBook } from '@fortawesome/free-solid-svg-icons';
+  import { faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faSearch, faBook, faEnvelope } from '@fortawesome/free-solid-svg-icons';
   import axios from 'axios';
   import { useRouter } from 'vue-router';
   
-  library.add(faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faSearch, faBook);
+  library.add(faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faSearch, faBook, faEnvelope);
   
   export default {
     name: 'LecturesView',
@@ -245,7 +251,7 @@
   .logo {
     cursor: pointer; /* Hiển thị con trỏ khi rê chuột vào */
     transition: transform 0.2s;
-    width: 40px;
+    width: 250px;
     height: auto;
   }
   .logo:hover {
@@ -258,7 +264,7 @@
     text-decoration: none; /* Loại bỏ gạch chân */
   }
   .logo-container h2 {
-    font-size: 30px;
+    font-size: 20px;
     transition: font-size 0.3s;
   }
   .sidebar.collapsed .logo-container h2 {

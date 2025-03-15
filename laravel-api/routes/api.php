@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\ContactController;
 
 Route::apiResource('lectures', LectureController::class);
 
@@ -42,17 +43,31 @@ Route::put('/users/{id}', [UserController::class, 'update']);
 // Xóa người dùng
 Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
+// Phân quyền
 Route::middleware('auth')->group(function () {
     Route::resource('roles', RoleController::class);
     Route::resource('permissions', PermissionController::class);
 });
-
 Route::middleware('role:admin')->get('/admin', function () {
     return response()->json(['message' => 'Welcome, Admin']);
 });
 
+//Subject API
 Route::get('/subjects', [SubjectController::class, 'index']);
 Route::post('/subjects', [SubjectController::class, 'store']);
 Route::get('/subjects/{id}', [SubjectController::class, 'show']);
 Route::put('/subjects/{id}', [SubjectController::class, 'update']);
 Route::delete('/subjects/{id}', [SubjectController::class, 'destroy']);
+
+// API quản lý liên hệ (Contacts)
+Route::post('/contacts', [ContactController::class, 'store']); // Không cần đăng nhập
+
+// Route::middleware('auth:api')->group(function () {
+//     Route::get('/contacts', [ContactController::class, 'index']);
+//     Route::delete('/contacts/{id}', [ContactController::class, 'destroy']);
+//     Route::put('/contacts/{id}/mark-as-read', [ContactController::class, 'markAsRead']);
+// });
+
+Route::get('/contacts', [ContactController::class, 'index']);
+Route::delete('/contacts/{id}', [ContactController::class, 'destroy']);
+Route::put('/contacts/{id}/mark-as-read', [ContactController::class, 'markAsRead']);
