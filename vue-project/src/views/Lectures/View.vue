@@ -46,11 +46,11 @@
         </header>
 
         <main class="content">
-        <div class="container-fluid mt-4">
+        <div class="container-fluid mt-2">
           <div class="card">
             <div class="card-header">
               <h4>Lectures</h4>
-              <RouterLink to="/lectures/create" class="btn btn-primary float-end">Add Lecture</RouterLink>
+              <button @click="showModal = true" class="btn btn-primary float-end">Add Lecture</button>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -66,8 +66,8 @@
                       <th>Actions</th>
                     </tr>
                   </thead>
-                  <tbody v-if="this.lectures.length > 0">
-                    <tr v-for="(data, index) in this.lectures" :key="index">
+                  <tbody v-if="this.filteredLectures.length > 0">
+                    <tr v-for="(data, index) in this.filteredLectures" :key="index">
                       <td>{{ data.id }}</td>
                       <td>{{ data.title }}</td>
                       <td>{{ data.description }}</td>
@@ -75,8 +75,8 @@
                       <td>{{ data.category }}</td>
                       <td>{{ data.created_at }}</td>
                       <td>
-                        <RouterLink :to="{ path: '/lectures/' + data.id + '/edit' }" class="btn btn-success">Edit</RouterLink>
-                        <button type="button" @click="deleteLecture(data.id)" class="btn btn-danger mx-1">Delete</button>
+                        <RouterLink :to="{ path: '/lectures/' + data.id + '/edit' }" class="btn btn-success mx-1 my-1">Edit</RouterLink>
+                        <button type="button" @click="deleteLecture(data.id)" class="btn btn-danger mx-1 my-1">Delete</button>
                       </td>
                     </tr>
                   </tbody>
@@ -92,23 +92,29 @@
         </div>
       </main>
       </div>
+      <Modal :isVisible="showModal" @close="showModal = false">
+        <lectureCreate @close="showModal = false" />
+      </Modal>
     </div>
   </template>
   
   <script>
-
   import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
   import { library } from '@fortawesome/fontawesome-svg-core';
   import { faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faSearch, faBook } from '@fortawesome/free-solid-svg-icons';
   import axios from 'axios';
   import { useRouter } from 'vue-router';
+  import Modal from '/src/views/Lectures/Modal.vue';
+  import lectureCreate from '/src/views/Lectures/Create.vue';
   
   library.add(faGauge, faVideo, faUsers, faCog, faSignOutAlt, faChevronLeft, faChevronRight, faSearch, faBook);
   
   export default {
     name: 'LecturesView',
     components: {
-      FontAwesomeIcon
+      FontAwesomeIcon,
+      Modal,
+      lectureCreate
     },
     setup() {
         const router = useRouter();
@@ -137,15 +143,27 @@
           router.push("/login");
         };
         return {
-          logout // 
+          logout
       };
+    },
+    watch: {
+      searchQuery: function(val){
+        this.filteredLectures = this.lectures.filter(lecture => 
+        lecture.title.toLowerCase().includes(val.toLowerCase()) ||
+        lecture.description.toLowerCase().includes(val.toLowerCase()) ||
+        lecture.category.toLowerCase().includes(val.toLowerCase()) ||
+        lecture.created_at.toLowerCase().includes(val.toLowerCase())
+        );
+      }
     },
     data() {
       return {
         isCollapsed: false,
-        searchQuery: '',
+        searchQuery: null,
         isMobile: window.innerWidth <= 768,
-        lectures: []
+        lectures: [],
+        filteredLectures: [],
+        showModal: false
       };
     },
     mounted() {
@@ -192,6 +210,7 @@
         axios.get('http://localhost:8000/api/lectures')
           .then(res => {
             this.lectures = res.data.data;
+            this.filteredLectures = this.lectures;
           })
           .catch(error => {
             console.log(error);
@@ -301,12 +320,16 @@
     flex-grow: 1;
     padding: 20px;
   }
-  .content {
-    flex-grow: 1;
-    padding: 20px;
-  }
   .table-responsive {
     overflow-x: auto;
+  }
+  .table-responsive .table {
+    border: 1px solid #ddd;
+  }
+  .table-responsive .table th,
+  .table-responsive .table td {
+    padding: 8px;
+    text-align: left;
   }
   @media (max-width: 768px) {
   .sidebar {
@@ -403,5 +426,4 @@
   font-weight: bold;
   color: #fff7f7;
 }
-
   </style>
