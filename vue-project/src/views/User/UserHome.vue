@@ -3,34 +3,33 @@
   <div>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-          <router-link to="/" class="navbar-brand">
-            <img src="/src/assets/logo_plt.png" class="navbar-logo">
-          </router-link>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <router-link to="/" class="nav-link active" aria-current="page">Trang chủ</router-link>
-              </li>
-              <li class="nav-item">
-                <router-link to="/course" class="nav-link">Bài giảng</router-link>
-              </li>
-              <li class="nav-item">
-                <router-link to="/courselist" class="nav-link">Khóa học</router-link>
-              </li>
-              <li class="nav-item">
-                <router-link to="/contact" class="nav-link">Liên hệ</router-link>
-              </li>
-              
-            </ul>
-          </div>
+      <div class="container">
+        <router-link to="/" class="navbar-brand">
+          <img src="/src/assets/logo_plt.png" class="navbar-logo">
+        </router-link>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <router-link to="/" class="nav-link active" aria-current="page">Trang chủ</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/course" class="nav-link">Bài giảng</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/courselist" class="nav-link">Khóa học</router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/contact" class="nav-link">Liên hệ</router-link>
+            </li>
+
+          </ul>
         </div>
-      </nav>
-    
-    <h1 class="title_homepage">List Videos</h1>
+      </div>
+    </nav>
 
     <div class="category-filter">
       <button v-for="category in categories" :key="category" @click="filterByCategory(category)"
@@ -52,6 +51,7 @@
         <div class="table-bordered">
           <div v-if="filteredLectures.length > 0">
             <div class="hpage-total_videos">
+
               <ul v-for="(data, index) in filteredLectures" :key="index" class="lecture-item">
                 <li class="frame-total_videos">
                   <div class="video-wrapper">
@@ -60,15 +60,21 @@
                     </router-link>
                   </div>
                 </li>
-                <li class="frame-total_videos desc_videos">
-                  <router-link :to="'/videodetail/' + data.id" class="link_pagevideos">
-                    <h4><strong>{{ data.title }}</strong></h4>
-                  </router-link>
-                </li>
-                <li class="frame-total_videos desc_videos">
-                  <p>{{ data.description }}</p>
-                </li>
+                <div class="title-videos-all">
+                  <li class="frame-total_videos desc_videos">
+                    <router-link :to="'/videodetail/' + data.id" class="link_pagevideos">
+                      <h4><strong>{{ data.title }}</strong></h4>
+                    </router-link>
+                  </li>
+                  <li class="frame-total_videos desc_videos">
+                    <p>{{ data.description }}</p>
+                  </li>
+                </div>
+
+
+
               </ul>
+
             </div>
           </div>
           <div v-else>
@@ -102,7 +108,7 @@ export default {
         filtered = filtered.filter(lecture => lecture.category === this.selectedCategory);
       }
       if (this.searchQuery) {
-        filtered = filtered.filter(lecture => 
+        filtered = filtered.filter(lecture =>
           lecture.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
           lecture.description.toLowerCase().includes(this.searchQuery.toLowerCase())
         );
@@ -152,7 +158,6 @@ export default {
 </script>
 
 <style scoped>
-
 /* NAVBAR */
 .navbar {
   display: flex;
@@ -194,7 +199,7 @@ export default {
 }
 
 .logo-img {
-  width: 35px; 
+  width: 35px;
   height: auto;
 }
 
@@ -245,7 +250,7 @@ export default {
 .category-filter button:hover {
   background-color: #f8f9fa;
   transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .category-filter .btn-info {
@@ -279,12 +284,12 @@ export default {
   border: 1px solid #ddd;
   font-size: 1rem;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .search-box input:focus {
   border-color: #007bff;
-  box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
   outline: none;
 }
 
@@ -295,5 +300,4 @@ export default {
   transform: translateY(-50%);
   color: #6c757d;
 }
-
 </style>

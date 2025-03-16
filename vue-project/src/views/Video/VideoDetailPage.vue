@@ -1,14 +1,49 @@
 <template>
-    <div class="video-detail-page">
+    <div class="navbar_detail-video">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <router-link to="/" class="navbar-brand">
+                    <img src="/src/assets/logo_plt.png" class="navbar-logo">
+                </router-link>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <router-link to="/" class="nav-link active" aria-current="page">Trang chủ</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/course" class="nav-link">Bài giảng</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/courselist" class="nav-link">Khóa học</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/contact" class="nav-link">Liên hệ</router-link>
+                        </li>
 
-        <div class="page-video_detail">
-            <iframe :src="getEmbedUrl(video.video_url)" title="Video Player" frameborder="0"
-                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
-            </iframe>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="total-infor_video">
+        <div class="video-detail-page">
+            <div class="page-video_detail">
+                <iframe :src="getEmbedUrl(video.video_url)" title="Video Player" frameborder="0"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                </iframe>
+            </div>
+            <div class="infor-video">
+                <h5>{{ video.title }}</h5>
+                <span>Thời gian đăng tải: {{ formatDate(video.created_at) }}</span>
+                <p>{{ video.description }}</p>
+            </div>
         </div>
-        <h2>{{ video.title }}</h2>
-        <span>Thời gian đăng tải: {{ formatDate(video.created_at) }}</span>
-        <p>{{ video.description }}</p>
     </div>
 </template>
 
@@ -58,21 +93,27 @@ export default {
 </script>
 
 <style scoped>
-.video-detail-page h2 {
-    font-size: 20px;
-    margin: 15px 20px;
+.total-infor_video {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
 }
 
-.video-detail-page p {
-    margin: 0 20px;
+.infor-video {
+    margin-top: 15px;
+    margin-bottom: 30px;
+    padding: 5px;
+    background-color: #0000000D;
+    border-radius: 10px;
 }
 
-.video-detail-page span {
-    margin: 0 20px;
-}
-
-.page-video_detail {
-    width: 100vw;
+.page-video_detail iframe {
+    width: 80vw;
     height: 70vh;
+    border-radius: 10px;
+}
+
+.infor-video {
+    justify-content: flex-start;
 }
 </style>
