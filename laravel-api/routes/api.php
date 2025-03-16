@@ -29,7 +29,7 @@ Route::post('lectures', [LectureController::class, 'store']);
 Route::get('lectures/{id}', [LectureController::class, 'show']);
 Route::get('lectures/{id}/edit', [LectureController::class, 'edit']);
 Route::put('lectures/{id}/edit', [LectureController::class, 'update']);
-Route::delete('lectures/{id}/delete', [LectureController::class,'destroy']);
+Route::delete('lectures/{id}/delete', [LectureController::class, 'destroy']);
 
 // Lấy tất cả người dùng
 Route::get('/users', [UserController::class, 'getUsers']);

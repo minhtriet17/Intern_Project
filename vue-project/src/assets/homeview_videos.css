@@ -37,6 +37,7 @@ iframe {
 .hpage-total_videos {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
   max-width: 100%;
 }
