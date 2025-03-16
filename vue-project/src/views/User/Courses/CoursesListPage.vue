@@ -22,9 +22,6 @@
               <li class="nav-item">
                 <router-link to="/" class="nav-link">Liên hệ</router-link>
               </li>
-              <li class="nav-item">
-                <router-link class="nav-link" to="/login" tabindex="-1" aria-disabled="true">Đăng xuất</router-link>
-              </li>
             </ul>
           </div>
         </div>
