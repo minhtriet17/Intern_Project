@@ -30,41 +30,48 @@
         
       <div class="homepage">
             <!-- Banner Chào Mừng -->
-            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-              <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-              </div>
-              <div class="carousel-inner">
-                <div class="carousel-item active">
-                  <img src="/src/assets/anh1.jpg" class="d-block w-100" alt="...">
-                  <div class="carousel-caption d-none d-md-block">
-                    <h1>Chào mừng đến với <span class="highlight">PLT SOLUTIONS COURSES</span></h1>
-                    <p>Nâng cao kỹ năng của bạn với các khóa học chất lượng hàng đầu.</p>
-                    <router-link to="/course" class="btn btn-primary">Khám phá khóa học</router-link>
+            <div class="carousel-container">
+              <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                <div class="carousel-indicators">
+                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <img src="/src/assets/anh1.jpg" class="d-block w-100 carousel-image" alt="Welcome Image">
+                    <div class="carousel-caption">
+                      <h1>Chào mừng đến với <span class="highlight">PLT SOLUTIONS COURSES</span></h1>
+                      <p>Nâng cao kỹ năng của bạn với các khóa học chất lượng hàng đầu.</p>
+                      <router-link to="/courselist" class="btn btn-primary">Khám phá khóa học</router-link>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <img src="/src/assets/anh2.jpg" class="d-block w-100 carousel-image" alt="About Us Image">
+                    <div class="carousel-caption">
+                      <h1>Tìm hiểu thêm về <span class="highlight">PLT SOLUTIONS</span></h1>
+                      <p>Nâng cao kỹ năng của bạn với các khóa học chất lượng hàng đầu.</p>
+                      <router-link to="/landingpage" class="btn btn-primary">Khám phá ngay</router-link>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <img src="/src/assets/anh3.jpg" class="d-block w-100 carousel-image" alt="Feature Image">
+                    <div class="carousel-caption">
+                      <h1>Khám phá <span class="highlight">Các bài giảng</span></h1>
+                      <p>Học tập và phát triển cùng chúng tôi.</p>
+                      <router-link to="/course" class="btn btn-primary">Xem bài giảng</router-link>
+                    </div>
                   </div>
                 </div>
-                <div class="carousel-item">
-                  <img src="/src/assets/anh2.jpg" class="d-block w-100" alt="...">
-                  <div class="carousel-caption d-none d-md-block">
-                    <h1>Tìm hiểu thêm về<span class="highlight">PLT SOLUTIONS</span></h1>
-                    <p>Nâng cao kỹ năng của bạn với các khóa học chất lượng hàng đầu.</p>
-                    <router-link to="/landingpage" class="btn btn-primary">Khám phá ngay</router-link>
-                  </div>
-                </div>
-                <div class="carousel-item">
-                  <img src="/src/assets/anh3.jpg" class="d-block w-100" alt="...">
-                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
               </div>
-              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-              </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-              </button>
             </div>
 
 
@@ -107,6 +114,10 @@
 </template>
 <script>
     import axios from 'axios'
+    import 'bootstrap/dist/css/bootstrap.min.css'
+    import 'bootstrap'
+    import { onMounted, nextTick } from 'vue'
+    import { Carousel } from 'bootstrap'
     
     export default {
         name: "HomePage",
@@ -115,6 +126,7 @@
                 lectures: [],
                 isLoading: true,
                 showAllLectures: false,
+                carousel: null
             };
         },
         computed: {
@@ -131,17 +143,28 @@
                 event.preventDefault(); // Ngăn chặn điều hướng mặc định
                 window.location.reload(); // Tải lại trang
             },
-
+            async initCarousel() {
+                await nextTick();
+                const carouselElement = document.getElementById('carouselExampleIndicators');
+                if (carouselElement) {
+                    this.carousel = new Carousel(carouselElement, {
+                        interval: 5000,
+                        wrap: true,
+                        touch: true,
+                        pause: 'hover'
+                    });
+                }
+            },
             getLectures() {
-            axios.get('http://localhost:8000/api/lectures')
-                .then(res => {
-                this.lectures = res.data.data;
-                this.isLoading = false;
-                })
-                .catch(error => {
-                console.log(error);
-                this.isLoading = false;
-                });
+                axios.get('http://localhost:8000/api/lectures')
+                    .then(res => {
+                        this.lectures = res.data.data;
+                        this.isLoading = false;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        this.isLoading = false;
+                    });
             },
             extractYouTubeId(url) {
                 const regExp = /(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/v\/|.*embed\/|.*youtu\.be\/|v=))([^&?\/]+)/;
@@ -156,8 +179,15 @@
                 this.showAllLectures = !this.showAllLectures;
             }
         },
-        mounted() { 
-            this.getLectures();
+        async mounted() {
+            await this.getLectures();
+            await this.initCarousel();
+        },
+        beforeUnmount() {
+            // Cleanup carousel when component is destroyed
+            if (this.carousel) {
+                this.carousel.dispose();
+            }
         }
     }
 </script>
@@ -281,63 +311,151 @@
   }
 }
 
+.carousel-container {
+  max-width: 1300px;
+  margin: 50px auto;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
 .carousel {
-  max-width: 1300px; /* Adjust the width as needed */
-  margin: 50px auto; /* Center the carousel and add margin */
-  border: 1px solid #ddd; /* Optional: Add a border */
-  border-radius: 10px; /* Optional: Add rounded corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow */
+  position: relative;
+  width: 100%;
 }
+
 .carousel-item {
-  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+  transition: transform 0.6s ease-in-out !important;
 }
-.carousel-inner img {
-  border-radius: 10px; /* Optional: Add rounded corners to images */
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
+  opacity: 0.8;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0 5px 5px 0;
+  height: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.carousel-control-next {
+  border-radius: 5px 0 0 5px;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.carousel-indicators {
+  bottom: 20px;
+}
+
+.carousel-indicators button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin: 0 5px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.carousel-indicators button.active {
+  background-color: #fff;
 }
 
 .carousel-caption {
   position: absolute;
-  bottom: 50px; /* Adjust position from bottom */
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
-  padding: 15px;
-  border-radius: 15px;
-  color: white; /* Text color */
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2rem;
+  color: white;
   text-align: center;
-  width: 80%; /* Adjust width */
+  border-radius: 15px;
+  width: 80%;
+  max-width: 800px;
 }
 
+.carousel-caption h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.carousel-caption .highlight {
+  color: #4CAF50;
+  margin: 0 0.5rem;
+}
+
+.carousel-caption p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.carousel-caption .btn {
+  font-size: 1.1rem;
+  padding: 0.5rem 2rem;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+}
+
+.carousel-caption .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
+  .carousel-image {
+    height: 400px;
+  }
+
   .carousel-caption {
-    bottom: 20px; /* Adjust position from bottom for smaller screens */
-    padding: 10px;
-    width: 90%; /* Adjust width for smaller screens */
+    padding: 1rem;
   }
 
   .carousel-caption h1 {
-    font-size: 1.5rem; /* Adjust font size for smaller screens */
+    font-size: 1.8rem;
   }
 
   .carousel-caption p {
-    font-size: 0.9rem; /* Adjust font size for smaller screens */
+    font-size: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .carousel-caption {
-    bottom: 10px; /* Adjust position from bottom for very small screens */
-    padding: 8px;
-    width: 95%; /* Adjust width for very small screens */
+  .carousel-image {
+    height: 300px;
   }
 
   .carousel-caption h1 {
-    font-size: 1.2rem; /* Adjust font size for very small screens */
+    font-size: 1.4rem;
   }
 
   .carousel-caption p {
-    font-size: 0.8rem; /* Adjust font size for very small screens */
+    font-size: 0.9rem;
   }
+
+  .carousel-caption .btn {
+    font-size: 0.9rem;
+    padding: 0.4rem 1.5rem;
+  }
+}
+
+.carousel-inner {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.carousel-image {
+  height: 500px;
+  object-fit: cover;
+  width: 100%;
 }
 
 /* Footer Section */

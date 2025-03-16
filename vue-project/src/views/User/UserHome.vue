@@ -4,32 +4,27 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-          <router-link to="/" class="navbar-brand">PLT Solutions</router-link>
+          <router-link to="/" class="navbar-brand">
+            <img src="/src/assets/logo_plt.png" class="navbar-logo">
+          </router-link>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
               <li class="nav-item">
                 <router-link to="/" class="nav-link active" aria-current="page">Trang chủ</router-link>
               </li>
               <li class="nav-item">
                 <router-link to="/course" class="nav-link">Bài giảng</router-link>
               </li>
-              <li class="nav-item dropdown">
-                <router-link class="nav-link dropdown-toggle disabled" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Khóa học
-                </router-link>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
+              <li class="nav-item">
+                <router-link to="/courselist" class="nav-link">Khóa học</router-link>
               </li>
               <li class="nav-item">
-                <router-link class="nav-link" to="/login" tabindex="-1" aria-disabled="true">Đăng xuất</router-link>
+                <router-link to="/contact" class="nav-link">Liên hệ</router-link>
               </li>
+              
             </ul>
           </div>
         </div>
@@ -230,54 +225,75 @@ export default {
 .category-filter {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 10px;
   margin: 20px;
-
+  justify-content: center;
+  padding: 15px;
 }
 
 .category-filter button {
-  background-color: rgb(236, 227, 227);
-  border-radius: 5px;
-  border: 0px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: #333;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .category-filter button:hover {
-  /* transform: scale(1.05); */
-  background-color: rgb(167, 163, 163);
-  opacity: 0.7;
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.category-filter .btn-info {
+  background-color: #17a2b8;
   color: white;
+  border: none;
+}
+
+.category-filter .btn-outline-secondary {
+  background-color: transparent;
+  border: 1px solid #6c757d;
+}
+
+.category-filter .btn-outline-dark {
+  border-color: #343a40;
 }
 
 .search-box {
-  margin: 20px 0;
+  margin: 20px auto;
   position: relative;
   display: flex;
   justify-content: center;
+  max-width: 500px;
+  padding: 0 20px;
 }
 
 .search-box input {
   width: 100%;
-  max-width: 500px; /* Limit the maximum width */
-  padding: 10px 20px 10px 40px; /* Add padding for the search icon */
-  border-radius: 25px; /* Make the input rounded */
-  border: 1px solid #ccc;
-  transition: border-color 0.3s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+  padding: 12px 20px 12px 45px;
+  border-radius: 25px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .search-box input:focus {
-  border-color: #007bff; /* Change border color on focus */
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
   outline: none;
 }
 
-.search-box .search-icon {
+.search-box i.search-icon {
   position: absolute;
-  left: 15px; /* Position the icon inside the input */
+  left: 35px;
   top: 50%;
   transform: translateY(-50%);
-  color: #777;
-  pointer-events: none; /* Prevent the icon from blocking input clicks */
-  font-size: 18px; /* Adjust the icon size */
+  color: #6c757d;
 }
 
 </style>
