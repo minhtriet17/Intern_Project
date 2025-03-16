@@ -227,7 +227,6 @@ export default {
     }
   };
   </script>
-
 <style scoped>
 .admin-home {
   display: flex;
