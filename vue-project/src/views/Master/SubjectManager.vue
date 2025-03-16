@@ -69,7 +69,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="subject in subjects" :key="subject.id">
+                <tr v-for="subject in filteredSubjects" :key="subject.id">
                   <td>{{ subject.id }}</td>
                   <td>{{ subject.name }}</td>
                   <td>{{ subject.description }}</td>
@@ -153,8 +153,9 @@ export default {
     return {
       msg: 'Welcome to PLT Solution App',
       isCollapsed: false,
-      searchQuery: '',
+      searchQuery: null,
       subjects: [],
+      filteredSubjects: [],
       isMobile: window.innerWidth <= 768,
       showAddSubjectModal: false,
       showUpdateSubjectModal: false,
@@ -164,8 +165,21 @@ export default {
         thumbnail: null}
     };
   },
+  watch: {
+    searchQuery: function(val){
+      if (!val) {
+        this.filteredSubjects = this.subjects;
+        return;
+      }
+      this.filteredSubjects = this.subjects.filter(subject => 
+        subject.name.toLowerCase().includes(val.toLowerCase()) ||
+        subject.description.toLowerCase().includes(val.toLowerCase())
+      );
+    }
+  },
   mounted() {
     this.fetchSubjects();
+    this.filteredSubjects = this.subjects;
     window.addEventListener('resize', this.checkScreenSize);
     const role = sessionStorage.getItem("role") || localStorage.getItem("role");
     if (role !== "admin") {
@@ -202,6 +216,7 @@ export default {
           }
         });
         this.subjects = response.data;
+        this.filteredSubjects = response.data;
       } catch (error) {
         console.error("Lỗi khi lấy danh sách môn học:", error);
         alert("Đã xảy ra lỗi khi lấy danh sách môn học. Vui lòng thử lại sau.");
@@ -329,25 +344,32 @@ export default {
   <style scoped>
   .admin-home {
     display: flex;
-    flex-direction: row;
   }
   .sidebar {
     width: 250px;
-    background: #333;
+    background: #1e1e2d;
     color: white;
-    padding: 20px;
     height: 100vh;
-    transition: width 0.3s;
     position: fixed;
     left: 0;
     top: 0;
-    bottom: 0;
     display: flex;
     flex-direction: column;
-    z-index: 1000;
+    align-items: center;
+    transition: width 0.3s;
+    z-index: 1100;
   }
   .sidebar.collapsed {
     width: 80px;
+  }
+
+  .sidebar .logo {
+    width: 200px;
+    transition: width 0.3s;
+  }
+
+  .sidebar.collapsed .logo {
+    width: 100px;
   }
   
   .toggle-container {
@@ -357,14 +379,22 @@ export default {
     width: 100%;
     padding: 10px 0;
     cursor: pointer;
-    background: #444;
+    background: #2a2a3a;
     border-radius: 5px;
-    margin-bottom: 10px;
+    text-align: center;
+    margin-bottom: 15px;
   }
+
   .toggle-btn {
     color: white;
     font-size: 20px;
+    transition: transform 0.3s;
   }
+
+  .toggle-container:hover .toggle-btn {
+    transform: scale(1.2);
+  }
+
   .logo-container {
     display: flex;
     align-items: center;
@@ -373,9 +403,11 @@ export default {
     margin-bottom: 20px;
   }
   .logo-container h2 {
-    font-size: 20px;
-    transition: font-size 0.3s;
+    font-size: 18px;
+    white-space: nowrap;
+    transition: opacity 0.3s, font-size 0.3s;
   }
+
   .logo {
     cursor: pointer; /* Hiển thị con trỏ khi rê chuột vào */
     transition: transform 0.2s;
@@ -399,11 +431,26 @@ export default {
   .sidebar ul {
     list-style: none;
     padding: 0;
+    margin: 0;
     width: 100%;
   }
   .sidebar ul li {
     margin: 15px 0;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    gap: 10px;
   }
+
+  .sidebar ul li i {
+    font-size: 24px; /* Kích thước icon */
+    margin-right: 15px;
+  }
+
+  .sidebar.collapsed ul li span {
+    display: none;
+  }
+
   .sidebar ul li a {
     color: white;
     text-decoration: none;
@@ -413,9 +460,14 @@ export default {
     padding: 10px;
     transition: background 0.3s;
     white-space: nowrap;
+    font-size: 16px;
+    transition: background 0.3s, padding-left 0.3s;
+    width: 100%;
+    border-radius: 5px;
   }
+
   .sidebar ul li a svg {
-    font-size: 20px;
+    font-size: 22px;
   }
   .sidebar ul li a span {
     transition: opacity 0.3s;
@@ -426,39 +478,79 @@ export default {
     overflow: hidden;
   }
   .sidebar ul li a:hover {
-    background: #555;
+    background: #444;
+    padding-left: 15px;
   }
   .content {
     flex-grow: 1;
     padding: 20px;
+    margin-top: 60px
   }
 
   @media (max-width: 768px) {
-  .sidebar {
-    width: 80px;
-  }
-  .sidebar.collapsed {
-    width: 60px;
-  }
-  .sidebar ul li a span {
-    display: none;
-  }
-  .sidebar .logo-container h2 {
-    display: none;
-    transition: opacity 0.3s;
-  }
-  .toggle-container {
-    position: absolute;
-    top: 20px;
-    right: 10px;
-    cursor: pointer;
-    background: #444;
-    padding: 5px;
-    border-radius: 50%;
-  }
-  .main-container {
-    margin-left: 0;
-  }
+    .sidebar {
+      width: 250px;
+      left: 0;
+      height: 100%;
+      position: fixed;
+      transition: width 0.3s ease-in-out;
+      overflow: hidden;
+    }
+
+    .sidebar.show {
+      width: 250px;
+      overflow: visible
+    }
+
+    .sidebar .logo {
+      width: 250px;
+      transition: width 0.3s;
+    }
+
+    .sidebar.show .logo {
+      width: 200px;
+    }
+
+    .sidebar.show ul {
+      display: block;
+    }
+
+    .sidebar.collapsed {
+      width: 80px;
+    }
+
+    .sidebar.show ul li a span {
+      display: inline;
+    }
+
+    .toggle-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 10px 0;
+      cursor: pointer;
+      background: #2a2a3a;
+      border-radius: 5px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .search-box {
+      max-width: 250px;
+    }
+    .search-box input {
+      font-size: 14px;
+      padding: 8px 12px;
+    }
+
+    .main-container {
+      margin-left: 0;
+    }
+    .header {
+      left: 0;
+      width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -487,6 +579,10 @@ export default {
   transition: margin-left 0.3s;
 }
 
+.sidebar.collapsed + .main-container {
+  margin-left: 80px; /* Khi sidebar thu gọn */
+}
+
 /* Header */
 .header {
   display: flex;
@@ -495,39 +591,61 @@ export default {
   background: #000000;
   padding: 15px 20px;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-  position: sticky;
+  position: fixed; /* Giữ header cố định */
   top: 0;
+  left: 250px; /* Dịch sang phải để tránh bị sidebar đè lên */
+  width: calc(100% - 250px);
   z-index: 1000;
+  transition: left 0.3s, width 0.3s;
 }
 
-.sidebar.collapsed + .main-container {
-  margin-left: 80px;
+.sidebar.collapsed + .main-container .header {
+  left: 80px;
+  width: calc(100% - 80px);
 }
 
 /* Thanh tìm kiếm */
 .search-box {
-  position: relative;
+  position: relative; 
   display: flex;
   align-items: center;
+  width: 100%;
+  max-width: 350px; /* Giới hạn chiều rộng */
+  background: #fff;
+  border-radius: 25px;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  transition: all 0.3s ;
 }
 
 .search-box input {
-  width: 250px;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
+  flex: 1; /* Giúp input chiếm hết không gian trống */
+  padding: 10px;
+  border: none;
   border-radius: 20px;
   outline: none;
-  transition: width 0.3s;
+  font-size: 16px;
+  width: 100%;
+  transition: all 0.3s ease-in-out;
 }
 
 .search-box input:focus {
-  width: 300px;
+  width: 100%;
+  border: none;
+  outline: none;
 }
 
 .search-icon {
   position: absolute;
-  right: 10px;
+  right: 15px;
+  font-size: 18px;
   color: #777;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.search-icon:hover {
+  color: #333;
 }
 
 /* SubjectManager Table */

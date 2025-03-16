@@ -219,14 +219,14 @@ export default {
         .then(res => {
           this.lectures = res.data.data;
           this.filteredLectures = this.lectures;
-        })
-        .catch(error => {
-          console.log(error);
-        });
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      }
     }
-  }
-};
-</script>
+  };
+  </script>
 
 <style scoped>
 .admin-home {
@@ -367,11 +367,30 @@ export default {
 
 @media (max-width: 768px) {
   .sidebar {
-    width: 80px;
+    width: 250px;
+    left: 0;
+    height: 100%;
+    position: fixed;
+    transition: width 0.3s ease-in-out;
+    overflow: hidden;
+  }
+
+  .sidebar.show {
+    width: 250px;
+    overflow: visible
+  }
+
+  .sidebar .logo {
+    width: 250px;
+    transition: width 0.3s;
+  }
+
+  .sidebar.show .logo {
+    width: 200px;
   }
 
   .sidebar.collapsed {
-    width: 60px;
+    width: 80px;
   }
 
   .sidebar ul li a span {
@@ -383,9 +402,34 @@ export default {
   }
 
   .toggle-container {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 10px 0;
+    cursor: pointer;
+    background: #2a2a3a;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .search-box {
+    max-width: 250px;
+  }
+
+  .search-box input {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .main-container {
+    margin-left: 0;
+  }
+
+  .header {
+    left: 0;
+    width: 100%;
   }
 }
 
@@ -400,6 +444,15 @@ export default {
   .sidebar.show {
     left: 0;
   }
+
+  .search-box {
+    max-width: 200px;
+  }
+
+  .search-icon {
+    font-size: 16px;
+    right: 10px;
+  }
 }
 
 .main-container {
@@ -407,7 +460,12 @@ export default {
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin-left: 250px; /* Tạo khoảng trống bằng với sidebar */
+  transition: margin-left 0.3s;
 }
+.sidebar.collapsed + .main-container {
+  margin-left: 80px; /* Khi sidebar thu gọn */
+} 
 
 /* Header */
 .header {
@@ -417,53 +475,61 @@ export default {
   background: #000000;
   padding: 15px 20px;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-  position: sticky;
+  position: fixed; /* Giữ header cố định */
   top: 0;
+  left: 250px; /* Dịch sang phải để tránh bị sidebar đè lên */
+  width: calc(100% - 250px);
   z-index: 1000;
+  transition: left 0.3s, width 0.3s;
+}
+
+.sidebar.collapsed + .main-container .header {
+  left: 80px;
+  width: calc(100% - 80px);
 }
 
 /* Thanh tìm kiếm */
 .search-box {
-  position: relative;
+  position: relative; 
   display: flex;
   align-items: center;
+  width: 100%;
+  max-width: 350px; /* Giới hạn chiều rộng */
+  background: #fff;
+  border-radius: 25px;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  transition: all 0.3s ;
 }
 
 .search-box input {
-  width: 250px;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
+  flex: 1; /* Giúp input chiếm hết không gian trống */
+  padding: 10px;
+  border: none;
   border-radius: 20px;
   outline: none;
-  transition: width 0.3s;
+  font-size: 16px;
+  width: 100%;
+  transition: all 0.3s ease-in-out;
 }
 
 .search-box input:focus {
-  width: 300px;
+  width: 100%;
+  border: none;
+  outline: none;
 }
 
 .search-icon {
   position: absolute;
-  right: 10px;
+  right: 15px;
+  font-size: 18px;
   color: #777;
+  cursor: pointer;
+  transition: color 0.3s;
 }
 
-/* Profile */
-.profile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+search-icon:hover {
+  color: #333;
 }
-
-.profile-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.username {
-  font-weight: bold;
-  color: #fff7f7;
-}
+  
 </style>
