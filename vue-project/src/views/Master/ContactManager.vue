@@ -68,7 +68,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="contact in contacts" :key="contact.id">
+                        <tr v-for="contact in filteredContacts" :key="contact.id">
                             <td>{{ contact.id }}</td>
                             <td>{{ contact.name }}</td>
                             <td>{{ contact.email }}</td>
@@ -89,7 +89,7 @@
   
   <script>
 import axios from "axios";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -100,11 +100,31 @@ library.add(faVideo, faUsers, faBook, faSignOutAlt, faChevronLeft, faChevronRigh
 export default {
   name: "ContactManager",
   components: { FontAwesomeIcon },
+  data() {
+    return {
+      isCollapsed: false,
+      searchQuery: "",
+      contacts: [],
+      filteredContacts: [],
+    };
+  },
+  
   setup() {
     const router = useRouter();
     const isCollapsed = ref(false);
     const searchQuery = ref("");
     const contacts = ref([]);
+
+    const filteredContacts = computed(() => {
+      return contacts.value.filter((contact) => {
+        return (
+          contact.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          contact.email.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          contact.number.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+          contact.message.toLowerCase().includes(searchQuery.value.toLowerCase())
+        );
+      });
+    });
 
     const fetchContacts = async () => {
         try {
@@ -163,7 +183,7 @@ export default {
     };
 
     onMounted(fetchContacts);
-    return { isCollapsed, searchQuery, contacts, deleteContact, markAsRead, logout, toggleSidebar };
+    return { isCollapsed, searchQuery, contacts, deleteContact, markAsRead, logout, toggleSidebar, filteredContacts  };
   }
 };
 </script>
@@ -171,24 +191,35 @@ export default {
   <style scoped>
     .admin-home {
     display: flex;
-    flex-direction: row;
-    height: 100vh;
   }
   .sidebar {
     width: 250px;
-    background: #333;
+    background: #1e1e2d;
     color: white;
-    padding: 20px;
     height: 100vh;
-    transition: width 0.3s;
-    position: relative;
+    position: fixed;
+    left: 0;
+    top: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: width 0.3s;
+    z-index: 1100;
   }
+
   .sidebar.collapsed {
     width: 80px;
   }
+
+  .sidebar .logo {
+    width: 200px;
+    transition: width 0.3s;
+  }
+
+  .sidebar.collapsed .logo {
+    width: 100px;
+  }
+
   .toggle-container {
     display: flex;
     justify-content: center;
@@ -196,14 +227,22 @@ export default {
     width: 100%;
     padding: 10px 0;
     cursor: pointer;
-    background: #444;
+    background: #2a2a3a;
     border-radius: 5px;
-    margin-bottom: 10px;
+    text-align: center;
+    margin-bottom: 15px;
   }
+
   .toggle-btn {
     color: white;
     font-size: 20px;
+    transition: transform 0.3s;
   }
+
+  .toggle-container:hover .toggle-btn {
+    transform: scale(1.2);
+  }
+
   .logo-container {
     display: flex;
     align-items: center;
@@ -212,8 +251,9 @@ export default {
     margin-bottom: 20px;
   }
   .logo-container h2 {
-    font-size: 20px;
-    transition: font-size 0.3s;
+    font-size: 18px;
+    white-space: nowrap;
+    transition: opacity 0.3s, font-size 0.3s;
   }
   .logo {
     cursor: pointer; /* Hiển thị con trỏ khi rê chuột vào */
@@ -232,16 +272,32 @@ export default {
   }
   .sidebar.collapsed .logo-container h2 {
     display: none;
-    font-size: 14px; /* Kích thước nhỏ hơn khi sidebar thu gọn */
+    opacity: 0;
+    font-size: 0px; /* Kích thước nhỏ hơn khi sidebar thu gọn */
   }
   .sidebar ul {
     list-style: none;
     padding: 0;
+    margin: 0;
     width: 100%;
   }
   .sidebar ul li {
     margin: 15px 0;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    gap: 10px;
   }
+
+  .sidebar ul li i {
+    font-size: 24px; /* Kích thước icon */
+    margin-right: 15px;
+  }
+
+  .sidebar.collapsed ul li span {
+    display: none;
+  }
+
   .sidebar ul li a {
     color: white;
     text-decoration: none;
@@ -251,9 +307,13 @@ export default {
     padding: 10px;
     transition: background 0.3s;
     white-space: nowrap;
+    font-size: 16px;
+    transition: background 0.3s, padding-left 0.3s;
+    width: 100%;
+    border-radius: 5px;
   }
   .sidebar ul li a svg {
-    font-size: 20px;
+    font-size: 22px;
   }
   .sidebar ul li a span {
     transition: opacity 0.3s;
@@ -264,26 +324,81 @@ export default {
     overflow: hidden;
   }
   .sidebar ul li a:hover {
-    background: #555;
+    background: #444;
+    padding-left: 15px;
   }
   .content {
     flex-grow: 1;
     padding: 20px;
+    margin-top: 100px
   }
 
   @media (max-width: 768px) {
   .sidebar {
+    width: 250px;
+    left: 0;
+    height: 100%;
+    position: fixed;
+    transition: width 0.3s ease-in-out;
+    overflow: hidden;
+  }
+
+  .sidebar.show {
+    width: 250px;
+    overflow: visible
+  }
+
+  .sidebar .logo {
+    width: 250px;
+    transition: width 0.3s;
+  }
+
+  .sidebar.show .logo {
+    width: 200px;
+  }
+
+  .sidebar.show ul {
+    display: block;
+  }
+
+  .sidebar.collapsed {
     width: 80px;
   }
-  .sidebar.collapsed {
-    width: 60px;
+
+  .sidebar.show ul li a span {
+    display: inline;
   }
-  .sidebar ul li a span {
-    display: none;
+
+  .toggle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 10px 0;
+    cursor: pointer;
+    background: #2a2a3a;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 15px;
   }
-  .sidebar .logo-container h2 {
-    display: none;
+
+  .search-box {
+    max-width: 250px;
   }
+
+  .search-box input {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .main-container {
+    margin-left: 0;
+  }
+  .header {
+    left: 0;
+    width: 100%;
+  }
+
   .toggle-container {
     position: absolute;
     top: 10px;
@@ -346,6 +461,15 @@ export default {
     left: 0;
   }
 
+  .search-box {
+    max-width: 200px;
+  }
+
+  .search-icon {
+    font-size: 16px;
+    right: 10px;
+  }
+
   /* Điều chỉnh thanh tìm kiếm */
   .search-box input {
     width: 200px; /* Thu nhỏ thanh tìm kiếm */
@@ -398,6 +522,11 @@ export default {
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin-left: 250px; /* Tạo khoảng trống bằng với sidebar */
+  transition: margin-left 0.3s;
+}
+.sidebar.collapsed + .main-container {
+  margin-left: 80px; /* Khi sidebar thu gọn */
 }
     /* Header */
 .header {
@@ -407,36 +536,61 @@ export default {
   background: #000000;
   padding: 15px 20px;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-  position: sticky;
+  position: fixed; /* Giữ header cố định */
   top: 0;
+  left: 250px; /* Dịch sang phải để tránh bị sidebar đè lên */
+  width: calc(100% - 250px);
   z-index: 1000;
+  transition: left 0.3s, width 0.3s;
+}
+
+.sidebar.collapsed + .main-container .header {
+  left: 80px;
+  width: calc(100% - 80px);
 }
 
 /* Thanh tìm kiếm */
 .search-box {
-  position: relative;
+  position: relative; 
   display: flex;
   align-items: center;
-  width: 200px;
+  width: 100%;
+  max-width: 350px; /* Giới hạn chiều rộng */
+  background: #fff;
+  border-radius: 25px;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  transition: all 0.3s ;
 }
 
 .search-box input {
-  width: 250px;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
+  flex: 1; /* Giúp input chiếm hết không gian trống */
+  padding: 10px;
+  border: none;
   border-radius: 20px;
   outline: none;
-  transition: width 0.3s;
+  font-size: 16px;
+  width: 100%;
+  transition: all 0.3s ease-in-out;
 }
 
 .search-box input:focus {
-  width: 300px;
+  width: 100%;
+  border: none;
+  outline: none;
 }
 
 .search-icon {
   position: absolute;
-  right: 10px;
+  right: 15px;
+  font-size: 18px;
   color: #777;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.search-icon:hover {
+  color: #333;
 }
     
 table {
