@@ -234,38 +234,60 @@ export default {
 }
 
 .sidebar {
-  width: 250px;
-  background: #333;
-  color: white;
-  padding: 20px;
-  height: 100vh;
-  transition: width 0.3s;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+    width: 250px;
+    background: #1e1e2d;
+    color: white;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: width 0.3s;
+    z-index: 1100;
+  }
 
 .sidebar.collapsed {
   width: 80px;
 }
 
-.toggle-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding: 10px 0;
-  cursor: pointer;
-  background: #444;
-  border-radius: 5px;
-  margin-bottom: 10px;
+.sidebar .logo {
+    width: 200px;
+    transition: width 0.3s;
 }
+
+.sidebar.collapsed .logo {
+    width: 100px;
+  }
+
+  .toggle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 10px 0;
+    cursor: pointer;
+    background: #2a2a3a;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 15px;
+  }
 
 .toggle-btn {
   color: white;
   font-size: 20px;
 }
+
+.toggle-btn {
+    color: white;
+    font-size: 20px;
+    transition: transform 0.3s;
+  }
+
+  .toggle-container:hover .toggle-btn {
+    transform: scale(1.2);
+  }
 
 .logo-container {
   display: flex;
@@ -275,13 +297,18 @@ export default {
   margin-bottom: 20px;
 }
 
-.logo {
-  cursor: pointer;
-  /* Hiển thị con trỏ khi rê chuột vào */
-  transition: transform 0.2s;
-  width: 250px;
-  height: auto;
-}
+.logo-container h2 {
+    font-size: 18px;
+    white-space: nowrap;
+    transition: opacity 0.3s, font-size 0.3s;
+  }
+
+  .logo {
+    cursor: pointer; /* Hiển thị con trỏ khi rê chuột vào */
+    transition: transform 0.2s;
+    width: 250px;
+    height: auto;
+  }
 
 .logo:hover {
   transform: scale(1.1);
@@ -302,34 +329,53 @@ export default {
 }
 
 .sidebar.collapsed .logo-container h2 {
-  display: none;
-  font-size: 14px;
-  /* Kích thước nhỏ hơn khi sidebar thu gọn */
-}
+    display: none;
+    opacity: 0;
+    font-size: 0; /* Kích thước nhỏ hơn khi sidebar thu gọn */
+  }
 
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  width: 100%;
-}
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
 
-.sidebar ul li {
-  margin: 15px 0;
-}
+  .sidebar ul li {
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    gap: 10px;
+  }
 
-.sidebar ul li a {
-  color: white;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  transition: background 0.3s;
-  white-space: nowrap;
-}
+  .sidebar ul li i {
+    font-size: 24px; /* Kích thước icon */
+    margin-right: 15px;
+  }
+
+  /* Ẩn chữ khi thu nhỏ */
+  .sidebar.collapsed ul li span {
+    display: none;
+  }
+
+  .sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    transition: background 0.3s;
+    white-space: nowrap;
+    font-size: 16px;
+    transition: background 0.3s, padding-left 0.3s;
+    width: 100%;
+    border-radius: 5px;
+  }
 
 .sidebar ul li a svg {
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .sidebar ul li a span {
@@ -344,12 +390,14 @@ export default {
 
 .sidebar ul li a:hover {
   background: #555;
+  padding-left: 15px;
 }
 
 .content {
-  flex-grow: 1;
-  padding: 20px;
-}
+    flex-grow: 1;
+    padding: 20px;
+    margin-top: 80px
+  }
 
 .table-responsive {
   overflow-x: auto;
@@ -389,12 +437,16 @@ export default {
     width: 200px;
   }
 
+  .sidebar.show ul {
+    display: block;
+  }
+
   .sidebar.collapsed {
     width: 80px;
   }
 
   .sidebar ul li a span {
-    display: none;
+    display: inline;
   }
 
   .sidebar .logo-container h2 {
@@ -426,7 +478,6 @@ export default {
   .main-container {
     margin-left: 0;
   }
-
   .header {
     left: 0;
     width: 100%;
@@ -468,7 +519,7 @@ export default {
 } 
 
 /* Header */
-.header {
+header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -528,7 +579,7 @@ export default {
   transition: color 0.3s;
 }
 
-search-icon:hover {
+.search-icon:hover {
   color: #333;
 }
   
