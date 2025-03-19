@@ -81,13 +81,13 @@ class SubjectController extends Controller
         if ($request->hasFile('thumbnail')) {
             // Xóa ảnh cũ nếu có
             if ($subject->thumbnail) {
-                $oldImagePath = str_replace(asset('storage/'), '', $subject->thumbnail);
-                \Storage::disk('public')->delete($oldImagePath);
+                $oldImagePath = basename($subject->thumbnail);
+                \Storage::disk('public')->delete('thumbnails/' . $oldImagePath);
             }
 
             // Lưu ảnh mới
             $imagePath = $request->file('thumbnail')->store('thumbnails', 'public');
-            $subject->thumbnail = asset('storage/' . $imagePath);
+            $subject->thumbnail = url('storage/' . $imagePath);
         }
 
         // Cập nhật thông tin khác

@@ -74,7 +74,9 @@
                   <td>{{ subject.name }}</td>
                   <td>{{ subject.description }}</td>
                   <td>
-                    <img v-if="subject.thumbnail" :src="subject.thumbnail" alt="Thumbnail" class="thumbnail-img" />
+                    {{ console.log("Subject:", subject) }}
+                    <img v-if="subject.thumbnail" :src="getFullImageUrl(subject.thumbnail)" alt="Thumbnail" class="thumbnail-img" />
+                    
                     <span v-else>Không có ảnh</span>
                   </td>
                   <td>
@@ -162,7 +164,8 @@ export default {
       newSubject: { 
         name: '', 
         description: '',
-        thumbnail: null}
+        thumbnail: null,
+        thumbnailPreview: null}
     };
   },
   watch: {
@@ -179,7 +182,6 @@ export default {
   },
   mounted() {
     this.fetchSubjects();
-    this.filteredSubjects = this.subjects;
     window.addEventListener('resize', this.checkScreenSize);
     const role = sessionStorage.getItem("role") || localStorage.getItem("role");
     if (role !== "admin") {
@@ -191,6 +193,11 @@ export default {
     window.removeEventListener('resize', this.checkScreenSize);
   },
   methods: {
+    getFullImageUrl(path) {
+      console.log("Thumbnail path:", path);
+      if (!path) return null;
+        return `${import.meta.env.VITE_API_URL}/storage/${path}`;
+      },
     toggleSidebar() {
       if (this.isMobile) {
         this.isCollapsed = !this.isCollapsed;
@@ -210,7 +217,7 @@ export default {
     async fetchSubjects() {
       try {
         const token = sessionStorage.getItem('token');
-        const response = await axios.get('http://127.0.0.1:8000/api/subjects', {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/subjects`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -234,7 +241,7 @@ export default {
           formData.append('thumbnail', this.newSubject.thumbnail);
         }
 
-        const response = await axios.post('http://127.0.0.1:8000/api/subjects', formData, {
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/subjects`, formData, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
@@ -242,14 +249,17 @@ export default {
         });
 
         console.log(response.data);
+        const newSubject = response.data;
+        newSubject.thumbnailPreview = this.newSubject.thumbnailPreview;
 
         // Thêm môn học mới vào danh sách mà không cần fetch lại từ server
-        this.subjects.push(response.data); 
+        await this.fetchSubjects();
+        this.filteredSubjects = [...this.subjects];
 
-        this.fetchSubjects();
         alert("Thêm môn học thành công!"); // Hiển thị thông báo
         this.newSubject = { name: '', description: '', thumbnail: null, thumbnailPreview: null }; // Reset form
         this.showAddSubjectModal = false;
+        this.fetchSubjects(); // Cập nhật danh sách môn học
       } catch (error) {
         console.error("Lỗi khi thêm môn học:", error);
       }
@@ -258,7 +268,7 @@ export default {
         if (confirm("Bạn có chắc chắn muốn xóa môn học này không?")) {
             try {
                 const token = sessionStorage.getItem('token');
-                await axios.delete(`http://127.0.0.1:8000/api/subjects/${id}`, {
+                await axios.delete(`${import.meta.env.VITE_API_URL}/api/subjects/${id}`, {
                     headers: {
                     'Authorization': `Bearer ${token}`
                     }
@@ -270,6 +280,7 @@ export default {
         }
     },
     async updateSubject() {
+      if (!confirm("Bạn có chắc muốn cập nhật môn học này không?")) return;
       try {
         const token = sessionStorage.getItem('token');
 
@@ -279,22 +290,21 @@ export default {
 
         if (this.newSubject.thumbnail) {
           formData.append('thumbnail', this.newSubject.thumbnail);
-        } else if (this.newSubject.thumbnailPreview) {
-          // Nếu không có ảnh mới, gửi lại ảnh cũ
-          formData.append('thumbnail', this.newSubject.thumbnailPreview);
         }
 
-        await axios.post(`http://127.0.0.1:8000/api/subjects/${this.newSubject.id}?_method=PUT`, formData, {
+        await axios.post(`${import.meta.env.VITE_API_URL}/api/subjects/${this.newSubject.id}?_method=PUT`, formData, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'multipart/form-data'
-          }
+          },
+          params: { _method: 'PUT' } // Tránh lỗi khi sử dụng method override
         });
 
         this.fetchSubjects();
         this.showUpdateSubjectModal = false;
       } catch (error) {
         console.error("Lỗi khi cập nhật môn học:", error);
+        alert("Cập nhật thất bại, vui lòng thử lại!");
       }
     },
     openAddSubjectModal() {
@@ -306,8 +316,8 @@ export default {
         id: subject.id,
         name: subject.name,
         description: subject.description,
-        thumbnailPreview: subject.thumbnail, // Lưu ảnh cũ để hiển thị
-        thumbnail: null // Đặt lại để tránh lỗi khi cập nhật
+        thumbnailPreview: subject.thumbnail ? this.getFullImageUrl(subject.thumbnail) : null, // Kiểm tra giá trị trước khi gán
+        thumbnail: null 
       };
       this.showUpdateSubjectModal = true;
     },
@@ -324,6 +334,10 @@ export default {
     handleThumbnailUpload(event) {
       const file = event.target.files[0];
       if (file) {
+        if (!file.type.startsWith('image/')) {
+          alert("Chỉ được tải lên file hình ảnh!");
+          return;
+        }
         this.newSubject.thumbnail = file;
 
         // Hiển thị ảnh tạm thời trước khi gửi lên server
@@ -333,7 +347,8 @@ export default {
         };
         reader.readAsDataURL(file);
       } else {
-        console.log("Không có ảnh nào được chọn");
+        this.newSubject.thumbnail = null;
+        this.newSubject.thumbnailPreview = null;
       }
     }
 

@@ -20,7 +20,7 @@
                 <router-link to="/courselist" class="nav-link">Khóa học</router-link>
               </li>
               <li class="nav-item">
-                <router-link to="/" class="nav-link">Liên hệ</router-link>
+                <router-link to="/contact" class="nav-link">Liên hệ</router-link>
               </li>
             </ul>
           </div>
@@ -32,7 +32,7 @@
       <div v-if="courses.length > 0" class="row">
         <div v-for="course in courses" :key="course.id" class="col-md-4 mb-4">
           <div class="card">
-            <img v-if="course.thumbnail" :src="course.thumbnail" class="card-img-top" alt="Hình ảnh khóa học">
+            <img v-if="course.thumbnail" :src="getThumbnailUrl(course.thumbnail)" class="card-img-top" alt="Hình ảnh khóa học">
             <div class="card-body">
               <h5 class="card-title">{{ course.name }}</h5>
               <p class="card-text">{{ course.description }}</p>
@@ -60,7 +60,7 @@ export default {
         async fetchCourses() {
             try {
                 const token = sessionStorage.getItem('token');
-                const response = await axios.get('http://localhost:8000/api/subjects', {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/subjects`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 }); // Gọi API từ backend
                 this.courses = response.data;
@@ -68,7 +68,11 @@ export default {
                 console.error("Lỗi khi tải danh sách khóa học:", error);
             }
         },
+        getThumbnailUrl(path) {
+        return path.startsWith('http') ? path : `${import.meta.env.VITE_API_URL}/api/storage/${path}`;
+      },
     },
+    
         mounted() {
             this.fetchCourses(); // Gọi hàm khi trang được tải
         }
@@ -117,17 +121,57 @@ export default {
      transition: 0.2s
  }
  /* Cards */
-.card {
+ .card {
   border-radius: 10px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column; /* Đảm bảo nội dung không bị lệch */
+  height: 100%; /* Đồng bộ chiều cao giữa các card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 .card img {
-  width: 100%; /* Đảm bảo ảnh chiếm toàn bộ chiều rộng của card */
-  height: 200px; /* Chiều cao cố định trên màn hình lớn */
-  object-fit: cover; /* Giữ tỷ lệ ảnh, cắt bớt phần thừa */
-  border-radius: 10px 10px 0 0; /* Bo góc trên */
-  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px 10px 0 0;
+}
+
+.card-content {
+  flex: 1; /* Đảm bảo nội dung mở rộng và đồng bộ chiều cao */
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.card-text {
+  flex: 1; /* Đẩy nút xuống dưới cùng */
+  font-size: 14px;
+  color: #555;
+  max-height: 3.6em; /* Giới hạn hiển thị 2 dòng */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.card-footer {
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+/* Hiệu ứng hover */
+.card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 /* Hiệu ứng hover khi rê chuột */
@@ -135,6 +179,8 @@ export default {
   transform: scale(1.05); /* Phóng to nhẹ khi hover */
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ */
 }
+
+
 
 /* Responsive cho màn hình nhỏ (tablet, mobile) */
 @media (max-width: 1024px) {
@@ -151,8 +197,14 @@ export default {
 
 @media (max-width: 480px) {
   .card img {
-    height: auto; /* Chiều cao tự động để không méo ảnh trên màn hình siêu nhỏ */
-    max-height: 150px; /* Giới hạn chiều cao để ảnh không quá to */
+    height: auto;
+    max-height: 150px;
+  }
+  .card-title {
+    font-size: 16px;
+  }
+  .card-description {
+    max-height: 2.7em; /* Giới hạn còn 2 dòng trên màn hình nhỏ */
   }
 }
 
